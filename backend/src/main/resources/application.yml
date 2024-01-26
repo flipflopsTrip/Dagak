@@ -55,11 +55,11 @@ openvidu:
 server:
   servlet:
     context-path: /dagak
-  ssl:
-    enabled: true
-    key-store: classpath:keystore.p12
-    key-store-type: PKCS12
-    key-store-password: dongjae123
+#  ssl:
+#    enabled: true
+#    key-store: classpath:keystore.p12
+#    key-store-type: PKCS12
+#    key-store-password: dongjae123
 
 google:
   auth:
