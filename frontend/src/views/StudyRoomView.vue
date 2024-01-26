@@ -97,8 +97,8 @@ axios.defaults.headers.post['Content-Type'] = 'application/json';
 
 
 const store = useUserStore();
-const APPLICATION_SERVER_URL = `${process.env.VITE_API_BASE_URL}/`;
-  process.env.NODE_ENV === 'production' ? '' : `${process.env.VITE_API_BASE_URL}dagak/`;
+const APPLICATION_SERVER_URL = `${import.meta.env.VITE_API_BASE_URL}/`;
+  process.env.NODE_ENV === 'production' ? '' : `${import.meta.env.VITE_API_BASE_URL}/dagak/`;
 
 
 const OV = ref(undefined);
@@ -141,7 +141,7 @@ const loginSession = () => {
     console.log(stream, "님이 로그인했습니다.");
     alert("친구가 로그인했어요!");
     await axios.post(
-      `${process.env.VITE_API_BASE_URL}/openvidu/api/signal`,
+      `${import.meta.env.VITE_API_BASE_URL}/openvidu/api/signal`,
       {},
       {
         headers: {

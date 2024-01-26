@@ -29,7 +29,7 @@ export const useUserStore = defineStore('user', () => {
   const mainStreamManagerMySession = ref(undefined)
   const publisherMySession = ref(undefined)
   const APPLICATION_SERVER_URL =
-  process.env.NODE_ENV === 'production' ? '' : `${process.env.VITE_API_BASE_URL}/`;
+  process.env.NODE_ENV === 'production' ? '' : `${import.meta.env.VITE_API_BASE_URL}/`;
   const myUserName = ref(loginUser.value.id);
 
   // 계정 방 입장 
