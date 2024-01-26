@@ -17,35 +17,38 @@
         <div class="column">
           <div class="video-player-3">
             <div class="bigvideo" ref="video13">
+              <user-video
+              class="bigvideo"
+              v-for="(sub, index) in subscribers.slice(0, 1)"
+              :key="sub.stream.connection.connectionId"
+              :stream-manager="sub"
+              @click.native="updateMainVideoStreamManager(sub)"
+            />
+            <div class="videog2" ref="video13">
               <user-video :stream-manager="mainStreamManager" />
             </div>
+            </div>
           </div>
-          <div class="video-player-1">
-            <user-video class="videog1" ref="video1" :stream-manager="publisher"
-              @click.native="updateMainVideoStreamManager(publisher)" />
-            <user-video class="videog1" ref="video2" :stream-manager="publisher"
-              @click.native="updateMainVideoStreamManager(publisher)" />
-            <user-video class="videog1" ref="video3" :stream-manager="publisher"
-              @click.native="updateMainVideoStreamManager(publisher)" />
-            <user-video class="videog1" ref="video4" :stream-manager="publisher"
-              @click.native="updateMainVideoStreamManager(publisher)" />
-            <!-- <user-video class="videog1" ref="video5" v-for="sub in subscribers" :key="sub.stream.connection.connectionId"
-              :stream-manager="sub" @click.native="updateMainVideoStreamManager(sub)" /> -->
-          </div>
-        </div>
 
-        <div class="video-player-2">
-          <user-video class="videog2" ref="video6" :stream-manager="publisher"
-            @click.native="updateMainVideoStreamManager(publisher)" />
-          <user-video class="videog2" ref="video7" :stream-manager="publisher"
-            @click.native="updateMainVideoStreamManager(publisher)" />
-          <user-video class="videog2" ref="video8" :stream-manager="publisher"
-            @click.native="updateMainVideoStreamManager(publisher)" />
-          <user-video class="videog2" ref="video9" :stream-manager="publisher"
-            @click.native="updateMainVideoStreamManager(publisher)" />
-          <user-video class="videog2" ref="video10" :stream-manager="publisher"
-            @click.native="updateMainVideoStreamManager(publisher)" />
+          <div class="video-player-1">
+            <user-video
+              class="videog1"
+              v-for="(sub, index) in subscribers.slice(1, 6)"
+              :key="sub.stream.connection.connectionId"
+              :stream-manager="sub"
+              @click.native="updateMainVideoStreamManager(sub)"
+            />
+          </div>
         </div>
+        <div class="video-player-2">
+      <user-video
+        class="videog2"
+        v-for="(sub, index) in subscribers.slice(6, 11)"
+        :key="sub.stream.connection.connectionId"
+        :stream-manager="sub"
+        @click.native="updateMainVideoStreamManager(sub)"
+      />
+    </div>
       </div>
       <div class="bar">
         <button class="ratetoggle" @click="toggleRate">달성률</button>
@@ -54,6 +57,9 @@
       <div class="utility">
         <div class="achievement" ref="achievementSection" v-if="showRate" @click="bringToFront($refs.achievementSection)">
           <div class="rate" v-if="showRate">
+            <div class="videog2" ref="video13">
+              <user-video :stream-manager="mainStreamManager" />
+            </div>
             <p class="titletag">공부시간</p>
             <div class="studytime">01:30:32</div>
             <hr />
@@ -67,6 +73,8 @@
               Python 마스터 --- <b>75%</b><br />
               C++ 마스터 --- <b>0%</b>
             </div>
+            <hr>
+
           </div>
         </div>
       </div>
@@ -108,7 +116,7 @@ axios.defaults.headers.post['Content-Type'] = 'application/json';
 
 const store = useUserStore();
 const APPLICATION_SERVER_URL =
-  process.env.NODE_ENV === 'production' ? '' : 'https://i10a404.p.ssafy.io/dagak/';
+  process.env.NODE_ENV === 'production' ? '' : 'https://localhost:8080/dagak/';
 
 
 const OV = ref(undefined);
