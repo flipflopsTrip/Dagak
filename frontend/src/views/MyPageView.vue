@@ -2,8 +2,11 @@
 <template>
   <div class="container d-flex flex-column">
     <nav class="mypage-wrapper-router">
-      <RouterLink :to="{ name : 'myPageSchedule' }">스케줄</RouterLink>
+      <RouterLink :to="{ name : 'myPageSchedule' }">일정</RouterLink>
       <RouterLink :to="{ name : 'myPageFriend' }">친구</RouterLink>
+      <RouterLink :to="{ name : 'myPageQnA' }">질문</RouterLink>
+      <RouterLink :to="{ name : 'myPageAlarm' }">알림</RouterLink>
+      <RouterLink :to="{ name : 'myPageInventory' }">보관함</RouterLink>
       <RouterLink :to="{ name : 'myPageInformation' }">정보</RouterLink>
     </nav>
     <div class="mypage-wrapper-content d-flex">
@@ -40,11 +43,11 @@ import MyPageProfile from '@/components/mypage/MyPageProfile.vue';
   border-style: solid;
   border-color: #999;
   border-radius: 3px 3px 0px 0px;
-  margin: 0px 10px;
+  margin: 0px 5px;
   position: relative;
   top: -4px;
-  left: 65%;
-  padding: 5px 30px;
+  left: 40%;
+  padding: 5px 20px;
   // transition: none;
 }
 .router-link-exact-active {
