@@ -78,27 +78,27 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
-import MyRanking from "@/components/home/MyRanking.vue";
-import MokkojiRanking from "@/components/home/MokkojiRanking.vue";
+import { ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+import MyRanking from '@/components/home/MyRanking.vue';
+import MokkojiRanking from '@/components/home/MokkojiRanking.vue';
 import { useUserStore } from '@/stores/user';
 import { useRankStore } from '@/stores/rank';
-import SimpleDagak from "@/components/dagak/SimpleDagak.vue";
+import SimpleDagak from '@/components/dagak/SimpleDagak.vue';
 const store = useUserStore();
 const rankstore = useRankStore();
 const router = useRouter();
 const mokkojiRank = ref([]);
 
 const navigateToStudyRoom = () => {
-  router.push('/studyroom')
-}
+  router.push('/studyroom');
+};
 
 onMounted(async () => {
   console.log('마운트 시작');
   store.login();
   await rankstore.getMokkojiRank();
-  console.log("mokkojiRank.value: ", rankstore.mokkojiRank);
+  console.log('mokkojiRank.value: ', rankstore.mokkojiRank);
 });
 </script>
 
@@ -127,7 +127,7 @@ onMounted(async () => {
 }
 .startbutton {
   // 기존 스타일 유지
-  background-color: #639B9D;
+  background-color: #639b9d;
   /* 적절한 배경색으로 변경 */
   border: none;
   color: white;
@@ -143,7 +143,7 @@ onMounted(async () => {
   /* 부드러운 전환 효과 */
 
   &:hover {
-    background-color: #3E6271;
+    background-color: #3e6271;
     /* 마우스 호버 시 색상 변경 */
   }
 
@@ -153,14 +153,14 @@ onMounted(async () => {
   }
 
   &:before {
-    content: "";
+    content: '';
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     // background: linear-gradient(45deg, #FF8C00, #FFD700); /* 그라데이션 효과 추가 */
-    background: linear-gradient(45deg, #00FF7F, #48D1CC);
+    background: linear-gradient(45deg, #00ff7f, #48d1cc);
     /* 그라데이션 효과 추가 */
     z-index: -1;
     border-radius: 8px;
@@ -223,7 +223,6 @@ onMounted(async () => {
     // background-color:rgb(190, 190, 190);
     font-size: x-large;
     font-family: 'ChosunGs';
-
   }
 }
 
@@ -245,7 +244,6 @@ onMounted(async () => {
     // background-color:gainsboro;
     font-size: x-large;
     font-family: 'Roboto Mono', monospace;
-
   }
 }
 
@@ -295,7 +293,7 @@ onMounted(async () => {
     left: 50vw;
     width: 30px;
     height: 20px;
-    // background-color:gray; 
+    // background-color:gray;
     font-size: 0;
   }
 
@@ -378,7 +376,6 @@ onMounted(async () => {
     height: 20px;
     // background-color:gray;
     font-size: 0;
-    ;
   }
 
   to {
@@ -411,7 +408,6 @@ onMounted(async () => {
     font-size: x-large;
   }
 }
-
 
 @keyframes move8h {
   from {
@@ -451,7 +447,6 @@ onMounted(async () => {
     font-family: 'Eulyoo1945';
   }
 }
-
 
 @keyframes move10h {
   from {
@@ -495,7 +490,6 @@ onMounted(async () => {
   }
 }
 
-
 @keyframes move11h {
   from {
     top: 50vh;
@@ -516,8 +510,6 @@ onMounted(async () => {
   }
 }
 
-
-
 @keyframes move12h {
   from {
     top: 50vh;
@@ -533,11 +525,11 @@ onMounted(async () => {
     height: 100px;
     // background-color:rgb(190, 190, 190);
     font-size: x-large;
-    font-family: 'ChosunGs'
+    font-family: 'ChosunGs';
   }
 }
 
-div[id^="square"] {
+div[id^='square'] {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -554,7 +546,7 @@ div[id^="square"] {
   color: black;
 }
 
-div[id^="bsquare"] {
+div[id^='bsquare'] {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -664,11 +656,10 @@ div[id^="bsquare"] {
   background-position: center;
 }
 
-
-
 .three {
   // background-color: rgb(195, 195, 195);
   background-image: url('@/assets/img/home/sky.jpg');
   background-size: cover;
   background-position: center;
-}</style>
+}
+</style>

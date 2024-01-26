@@ -28,7 +28,7 @@
 <script setup>
 import { useRankStore } from '@/stores/rank';
 import { useUserStore } from '@/stores/user';
-import { ref, onMounted } from 'vue'
+import { ref, onMounted } from 'vue';
 
 const store = useUserStore();
 
@@ -52,11 +52,24 @@ const rankstore = useRankStore();
 
 onMounted(() => {
   rankstore.getMokkojiRank();
-  console.log("mokkojiRank.value: ", rankstore.mokkojiRank);
-  console.log("mokkojiRank.value: ", rankstore.mokkojiRank.value);
-  console.log("mokkojiRank.value.mokkojiName: ", rankstore.mokkojiRank.mokkojiName);
+  console.log('mokkojiRank.value: ', rankstore.mokkojiRank);
+  console.log('mokkojiRank.value: ', rankstore.mokkojiRank.value);
+  console.log(
+    'mokkojiRank.value.mokkojiName: ',
+    rankstore.mokkojiRank.mokkojiName,
+  );
 });
 
+onMounted(() => {
+  store.login();
+  rankstore.getMokkojiRank();
+  console.log('mokkojiRank.value: ', rankstore.mokkojiRank);
+  console.log('mokkojiRank.value: ', rankstore.mokkojiRank.value);
+  console.log(
+    'mokkojiRank.value.mokkojiName: ',
+    rankstore.mokkojiRank.mokkojiName,
+  );
+});
 </script>
 
 <style lang="scss" scoped>
@@ -85,7 +98,8 @@ table {
   border-collapse: collapse;
 }
 
-th, td {
+th,
+td {
   border: 2px solid black;
   padding: 8px;
   text-align: center;
