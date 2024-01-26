@@ -98,7 +98,7 @@ axios.defaults.headers.post['Content-Type'] = 'application/json';
 
 const store = useUserStore();
 const APPLICATION_SERVER_URL = `${import.meta.env.VITE_API_BASE_URL}/`;
-  process.env.NODE_ENV === 'production' ? '' : `${import.meta.env.VITE_API_BASE_URL}/dagak/`;
+  process.env.NODE_ENV === 'production' ? '' : `${import.meta.env.VITE_API_BASE_URL}:8443/dagak/`;
 
 
 const OV = ref(undefined);
