@@ -88,7 +88,6 @@ import SimpleDagak from "@/components/dagak/SimpleDagak.vue";
 const store = useUserStore();
 const rankstore = useRankStore();
 const router = useRouter();
-const API_URL = 'https://localhost:8080';
 const mokkojiRank = ref([]);
 
 const navigateToStudyRoom = () => {

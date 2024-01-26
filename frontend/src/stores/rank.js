@@ -4,6 +4,7 @@ import axios from "axios";
 import router from "@/router";
 
 export const useRankStore = defineStore('counter', () => {
+const API_URL = `${process.env.VITE_API_BASE_URL}/`;
 const mokkojiRank = ref([])
 // const getMokkojiRank = function () {
 //     axios({
