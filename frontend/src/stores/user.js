@@ -29,7 +29,7 @@ export const useUserStore = defineStore('user', () => {
   const mainStreamManagerMySession = ref(undefined)
   const publisherMySession = ref(undefined)
   const APPLICATION_SERVER_URL =
-  process.env.NODE_ENV === 'production' ? '' : 'https://localhost:8080/dagak/';
+  process.env.NODE_ENV === 'production' ? '' : `${process.env.VITE_API_BASE_URL}/`;
   const myUserName = ref(loginUser.value.id);
 
   // 계정 방 입장 
@@ -60,7 +60,7 @@ export const useUserStore = defineStore('user', () => {
       alert("친구가 로그인했어요!")
 
       await axios.post( // 로그인 콜백
-      "https://i10a404.p.ssafy.io/openvidu/api/signal",
+      `${process.env.VITE_API_BASE_URL}/openvidu/api/signal`,
       {
         session: stream.data,
           type: "signal:login-callBack",

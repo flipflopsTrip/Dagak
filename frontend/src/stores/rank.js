@@ -4,7 +4,6 @@ import axios from "axios";
 import router from "@/router";
 
 export const useRankStore = defineStore('counter', () => {
-const API_URL = 'https://localhost:8080'
 const mokkojiRank = ref([])
 // const getMokkojiRank = function () {
 //     axios({
@@ -21,7 +20,7 @@ const mokkojiRank = ref([])
 //   };
 const getMokkojiRank = async function () {
   try {
-    const response = await axios.get(`${API_URL}/dagak/mokkoji/rank10`);
+    const response = await axios.get(`${process.env.VITE_API_BASE_URL}/dagak/mokkoji/rank10`);
     console.log('js.mokkojirank: ', response.data.data[0].mokkoji);
     console.log('js.mokkojirank: ', response.data.data);
     mokkojiRank.value = response.data.data;
