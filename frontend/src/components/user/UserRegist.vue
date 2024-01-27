@@ -174,7 +174,7 @@ const duplicateIdCheck = async function(checkId) {
 
   /* code로 분기해야함 */
   await axios.post( // 로그인 콜백
-        "https://localhost:8080/dagak/user",
+        `${import.meta.env.VITE_API_BASE_URL}`,
         body,
         {
           headers: {
@@ -276,7 +276,7 @@ const duplicateNicknameCheck = async function(checkNickname) {
 
   /* code로 분기해야함 */
   await axios.post( // 로그인 콜백
-        "https://localhost:8080/dagak/user",
+      `${ import.meta.env.VITE_API_BASE_URL }`,
         body,
         {
           headers: {
