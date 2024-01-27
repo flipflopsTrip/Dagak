@@ -30,8 +30,8 @@ export const useUserStore = defineStore('user', () => {
   const publisherMySession = ref(undefined);
   const APPLICATION_SERVER_URL =
     process.env.NODE_ENV === 'production'
-      ? ''
-      : 'https://localhost:8080/dagak/';
+      ? 'https://i10a404.p.ssafy.io/dagak/'
+      : 'https://i10a404.p.ssafy.io/dagak/';
   const myUserName = ref(loginUser.value.id);
 
   // 계정 방 입장
