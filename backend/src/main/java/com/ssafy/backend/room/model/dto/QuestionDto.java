@@ -1,30 +1,39 @@
 package com.ssafy.backend.room.model.dto;
 
-import com.ssafy.backend.room.model.domain.Question;
-import lombok.*;
+import com.google.gson.JsonObject;
 
-@Setter
-@Getter
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
 public class QuestionDto {
-    private String questionId;
-    private String userId;
-    private String session;
-    private String data;
+    private String sessionName;
+    private String message;
 
-    public QuestionDto(String userId, String session, String data) {
-        this.userId = userId;
-        this.session = session;
-        this.data = data;
+    public void setSessionName(String sessionName) {
+        this.sessionName = sessionName;
     }
 
-    public Question toEntity(){
-        return Question.builder()
-                .userId(this.userId)
-                .session(this.session)
-                .question(this.data)
-                .build();
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public String getSessionName() {
+        return sessionName;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public QuestionDto() {
+    }
+
+    public QuestionDto(String sessionName, String message) {
+        this.sessionName = sessionName;
+        this.message = message;
+    }
+
+    public String toJsonString(){
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("session", this.sessionName);
+        jsonObject.addProperty("data", this.message);
+        return jsonObject.toString();
     }
 }

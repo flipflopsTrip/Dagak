@@ -1,35 +1,36 @@
 package com.ssafy.backend.room.model.dto;
 
+import com.google.gson.JsonObject;
 import com.ssafy.backend.room.model.domain.Answer;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class AnswerDto {
-    private String answerId;
-    private String userId;
-    private String session;
-    private String data;
-    private String questionId;
+    private Integer answerId;
+    private String sessionName;
+    private String message;
+    private Integer question;
 
-    public AnswerDto(String userId, String session, String data, String questionId) {
-        this.userId = userId;
-        this.session = session;
-        this.data = data;
-        this.questionId = questionId;
+    public String toJsonString(){
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("session", this.sessionName);
+        jsonObject.addProperty("data", this.answerId);
+        return jsonObject.toString();
+    }
+
+    public AnswerDto(String sessionName, String message, Integer question) {
+        this.sessionName = sessionName;
+        this.message = message;
+        this.question = question;
     }
 
     public Answer toEntity(){
         return Answer.builder()
-                .userId(this.userId)
-                .session(this.session)
-                .answer(this.data)
-                .questionId(this.questionId)
+                .answer(this.message)
+                .questionId(this.question)
                 .build();
     }
 }

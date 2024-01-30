@@ -1,4 +1,4 @@
-package com.ssafy.backend.user.model.dto;
+package com.ssafy.backend.user.model;
 
 import com.ssafy.backend.common.exception.MyException;
 import org.springframework.http.HttpStatus;
