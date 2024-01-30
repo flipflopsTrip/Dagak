@@ -46,29 +46,14 @@ const router = createRouter({
           component: () => import('@/components/mypage/MyPageSchedule.vue'),
         },
         {
-          path: 'friend',
+          path: 'mypagefriend',
           name: 'myPageFriend',
           component: () => import('@/components/mypage/MyPageFriend.vue'),
         },
         {
-          path: 'information',
+          path: 'mypageinformation',
           name: 'myPageInformation',
           component: () => import('@/components/mypage/MyPageInformation.vue'),
-        },
-        {
-          path: 'qna',
-          name: 'myPageQnA',
-          component: () => import('@/components/mypage/MyPageQnA.vue'),
-        },
-        {
-          path: 'alarm',
-          name: 'myPageAlarm',
-          component: () => import('@/components/mypage/MyPageAlarm.vue'),
-        },
-        {
-          path: 'inventory',
-          name: 'myPageInventory',
-          component: () => import('@/components/mypage/MyPageInventory.vue'),
         },
       ],
     },
@@ -78,15 +63,9 @@ const router = createRouter({
       component: StudyRoomView
     },
     {
-      // :모꼬지pk 나중에 넣자
-      path: '/mokkoji/:id',
+      path: '/mokkoji',
       name: 'Mokkoji',
       component: () => import('@/views/MokkojiView.vue'),
-    },
-    {
-      path: '/apply',
-      name: 'Apply',
-      component: () => import('@/views/ApplyView.vue'),
     },
   ],
 });
