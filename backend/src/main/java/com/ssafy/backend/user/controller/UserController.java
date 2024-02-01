@@ -6,18 +6,18 @@ import com.ssafy.backend.common.utils.RegEx;
 import com.ssafy.backend.friend.model.vo.FriendVO;
 import com.ssafy.backend.friend.service.FriendService;
 import com.ssafy.backend.loginhistory.service.LoginHistoryService;
-import com.ssafy.backend.room.model.dto.QuestionDto;
-import com.ssafy.backend.security.model.SecurityDto;
 import com.ssafy.backend.security.model.mapper.SecurityMapper;
 import com.ssafy.backend.user.model.domain.User;
-import com.ssafy.backend.user.model.dto.OpenviduRequestDto;
-import com.ssafy.backend.user.model.dto.UserLoginDto;
-import com.ssafy.backend.user.model.dto.UserSignupDto;
+import com.ssafy.backend.user.model.dto.OpenviduRequestDTO;
+import com.ssafy.backend.user.model.dto.UserLoginDTO;
+import com.ssafy.backend.user.model.dto.UserSignupDTO;
 import com.ssafy.backend.user.model.mapper.UserMapper;
 import com.ssafy.backend.user.model.vo.MyPageVO;
+import com.ssafy.backend.user.model.vo.UserInformationVO;
 import com.ssafy.backend.user.model.vo.UserViewVO;
 import com.ssafy.backend.user.service.GoogleOAuthService;
 import com.ssafy.backend.user.service.KakaoOAuthService;
+import com.ssafy.backend.user.service.ReCaptchaService;
 import com.ssafy.backend.user.service.UserService;
 import io.openvidu.java.client.OpenVidu;
 
@@ -37,6 +37,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.net.URI;
+import java.time.LocalDate;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
@@ -75,6 +76,9 @@ public class UserController {
     @Autowired
     GoogleOAuthService googleOAuthService;
 
+    @Autowired
+    ReCaptchaService reCaptchaService;
+
 
     // Transaction test
     @Autowired
@@ -86,10 +90,12 @@ public class UserController {
     @Transactional(rollbackFor = Exception.class)
     @PostMapping("test")
     public void test(@RequestBody Map<String, Object> body, HttpServletRequest request) throws Exception {
-        userMapper.signup(null);
-        securityMapper.insertSalt(new SecurityDto("userid", "PLZ"));
-    }
+        List<Integer> date = (List<Integer>) body.get("test");
+        System.out.println(date);
+        LocalDate today = LocalDate.of(date.get(0), date.get(1), date.get(2));
+        System.out.println(today);
 
+    }
 
     @PostMapping("")
     public BaseResponse<?> user(@RequestBody Map<String, Object> body, HttpServletRequest request) throws Exception {
@@ -101,7 +107,7 @@ public class UserController {
                 /*
                  * [POST] 회원가입
                  */
-                case "signup":
+                case "signUp":
                     String userLoginId = (String) body.get("userId");
                     String userLoginBirthday = (String) body.get("userBirthday");
                     String userLoginName = (String) body.get("userName");
@@ -110,14 +116,14 @@ public class UserController {
                     String userLoginEmail = (String) body.get("userEmail");
                     String userLoginNickname = (String) body.get("userNickname");
 
-                    UserSignupDto userSignupDto = new UserSignupDto(userLoginId, userLoginBirthday, userLoginName, userLoginPassword, userLoginPhonenumber, userLoginEmail, userLoginNickname);
+                    UserSignupDTO userSignupDTO = new UserSignupDTO(userLoginId, userLoginBirthday, userLoginName, userLoginPassword, userLoginPhonenumber, userLoginEmail, userLoginNickname);
 
-                    userService.signup(userSignupDto);
+                    userService.signUp(userSignupDTO);
 
-                    if(session != null) {
+                    if (session != null) {
                         session.invalidate();
                     }
-                    return new BaseResponse<>(SUCCESS_ID_SIGN_UP);
+                    return new BaseResponse<>(SUCCESS);
 
                 /*
                  * [POST] 로그인
@@ -128,16 +134,19 @@ public class UserController {
                     String loginUserPassword = (String) body.get("userPassword");
                     String loginUserIp = request.getRemoteAddr();
 
-                    UserLoginDto userLoginDto = new UserLoginDto(loginUserId, loginUserPassword);
+                    UserLoginDTO userLoginDto = new UserLoginDTO(loginUserId, loginUserPassword);
                     if (userService.login(userLoginDto)) {  // 로그인 성공 시...
+
                         User user = new User(loginUserId);
                         session = request.getSession();
                         session.setAttribute("User", user);
+                        System.out.println("session : " + session);
 
                         if (session.getAttribute("kakaoEmail") != null) {
                             // 세션에 kakaoEmail 이 있으면 연동함.
                             String kakaoEmail = (String) session.getAttribute("kakaoEmail");
                             userService.linkKakao(loginUserId, kakaoEmail);
+                            session.invalidate();
                             return new BaseResponse<>(SUCCESS);
                         }
 
@@ -145,17 +154,16 @@ public class UserController {
                             // 세션에 googleEmail 이 있으면 연동함.
                             String googleEmail = (String) session.getAttribute("googleEmail");
                             userService.linkGoogle(loginUserId, googleEmail);
+                            session.invalidate();
                             return new BaseResponse<>(SUCCESS);
                         }
-
 
                         // 로그인 성공시 친구들에게 시그널 전송
                         List<FriendVO> friendList = friendService.listFriends(loginUserId);
 
                         for (FriendVO friend : friendList) {
                             System.out.println(friend.getUserId() + "에게 로그인 신호");
-
-                            OpenviduRequestDto openviduRequestDto = new OpenviduRequestDto(friend.getUserId(), "login", loginUserId);
+                            OpenviduRequestDTO openviduRequestDto = new OpenviduRequestDTO(friend.getUserId(), "login", loginUserId);
                             URI uri = UriComponentsBuilder
                                     .fromUriString(OPENVIDU_URL)
                                     .path("/openvidu/api/signal")
@@ -172,17 +180,21 @@ public class UserController {
                                     .header("Authorization", "Basic T1BFTlZJRFVBUFA6TVlfU0VDUkVU")
                                     .body(openviduRequestDto.toJson());
 
-                            System.out.println(openviduRequestDto.toJson());
-
                             RestTemplate restTemplate = new RestTemplate();
                             restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
-
-                            ResponseEntity<QuestionDto> responseEntity = restTemplate.postForEntity(uri, requestEntity, QuestionDto.class);
+                            try{
+                                ResponseEntity<Object> responseEntity = restTemplate.postForEntity(uri, requestEntity, Object.class);
+                            }catch (Exception e){
+                                System.out.println("error: "+e);
+                            }
                         }
-
                         loginHistoryService.successLogin(loginUserId, loginUserIp);
-                        return new BaseResponse<>(SUCCESS_LOGIN);
-                    } else {  // 로그인 실패 시 카운트 시작.
+                        return new BaseResponse<>(SUCCESS);
+                    } else {  // 로그인 실패 시
+                        if (session!=null){
+                            session.invalidate();
+                        }
+                        // 로그인 실패 시 카운트 시작.
                         int remainTime = loginHistoryService.failLogin(loginUserId, loginUserIp);
                         if (remainTime != 0) {
                             return new BaseResponse<>(remainTime + "초 뒤에 다시 시도해주세요");
@@ -196,16 +208,15 @@ public class UserController {
                     if (session != null) {
                         session.invalidate();
                     }
-                    return new BaseResponse<>("로그아웃 성공");
+                    return new BaseResponse<>(SUCCESS);
                 /*
                  * [POST] 아이디 중복 검사
                  */
                 case "isExistId":
                     String userTriedId = (String) body.get("userId");
-
                     boolean isExistId = userService.isExistId(userTriedId);
                     if (isExistId) {
-                        throw new BaseException(ALREADY_EXIST_USER);
+                        throw new BaseException(ALREADY_EXIST_ID);
                     } else {
                         return new BaseResponse<>(SUCCESS_ID_CHECK);
                     }
@@ -220,26 +231,32 @@ public class UserController {
                     if (isExistNickname) {
                         throw new BaseException(ALREADY_EXIST_NICKNAME);
                     } else {
-                        return new BaseResponse<>(SUCCESS_NICKNAME_CHECK);
+                        return new BaseResponse<>(SUCCESS);
                     }
 
                     /*
                      * [POST] 회원 정보 보기
                      * 유저아이디, 유저닉네임, 유저사진, 유저상태메세지, 유저모꼬지이름, 유저누적공부시간, 유저랭크
                      */
-                case "viewUserInformation":
-                    String viewUserNickname = (String) body.get("userNickname");
-                    if (viewUserNickname != null) {
-                        boolean isExistNicknameForView = userService.isExistNickname(viewUserNickname);
-                        if (isExistNicknameForView) {
-                            UserViewVO userViewVO = userService.viewUserInformation(viewUserNickname);
-                            return new BaseResponse<>(userViewVO);
+                case "getUserInformation":
+                    session = request.getSession(false);
+                    if (session!=null){
+                        String getUserNickname = (String) body.get("userNickname");
+                        if (getUserNickname != null) {
+                            boolean isExistNicknameForView = userService.isExistNickname(getUserNickname);
+                            if (isExistNicknameForView) {
+                                UserInformationVO userInformationVO = userService.getUserInformation(getUserNickname);
+                                return new BaseResponse<>(userInformationVO);
+                            } else {
+                                throw new BaseException(PLZ_ENTER_NICKNAME);
+                            }
                         } else {
                             throw new BaseException(PLZ_ENTER_NICKNAME);
                         }
                     } else {
-                        throw new BaseException(PLZ_ENTER_NICKNAME);
+                        throw new BaseException(NEED_LOGIN);
                     }
+
 
                     /*
                      * [POST] 회원 가입 이메일 인증 보내기 ...
@@ -251,8 +268,9 @@ public class UserController {
                     String codeForAuth = userService.sendEmail(userEmailForAuth);
                     session = request.getSession();
                     session.setAttribute("codeForAuth", codeForAuth);
+
                     System.out.println(codeForAuth);
-                    return new BaseResponse<>(SUCCESS_SEND_EMAIL);
+                    return new BaseResponse<>(SUCCESS);
 
                 /*
                  * [POST] 인증번호 확인하기 ...
@@ -267,9 +285,10 @@ public class UserController {
                         String originCodeForAuth = (String) session.getAttribute("codeForAuth");
                         if (originCodeForAuth != null) {
                             if (userCodeForAuth.equals(originCodeForAuth)) {
-                                session.removeAttribute("codeForAuth");
-                                return new BaseResponse<>(SUCCESS_AUTH);
+                                session.invalidate();
+                                return new BaseResponse<>(SUCCESS);
                             } else {
+                                session.invalidate();
                                 throw new BaseException(INVALID_AUTH_CODE);
                             }
                         }
@@ -287,21 +306,23 @@ public class UserController {
                             String deleteUserPassword = (String) body.get("userPassword");
                             boolean isSuccess = userService.deleteUser(deleteUserId, deleteUserPassword);
                             if (isSuccess) {
-                                return new BaseResponse<>(SUCCESS_DELETE_USER);
+                                session.invalidate();
+                                return new BaseResponse<>(SUCCESS);
                             } else {
                                 throw new BaseException(FAIL_TO_DELETE_USER);
                             }
                         } else {
+                            session.invalidate();
                             throw new BaseException(NEED_LOGIN);
                         }
                     } else {
                         throw new BaseException(NEED_LOGIN);
                     }
 
-                    /*
-                     * [POST] 비밀번호 변경
-                     */
-                case "changePassword":
+                /*
+                 * [POST] 비밀번호 변경
+                 */
+                case "modifyPassword":
                     session = request.getSession(false);
                     if (session != null) {
                         User originUser = (User) session.getAttribute("User");
@@ -310,13 +331,13 @@ public class UserController {
                         String originPassword = (String) body.get("userPassword");
                         String newPassword = (String) body.get("newPassword");
 
-                        UserLoginDto userOriginDto = new UserLoginDto(originUserId, originPassword);
-                        boolean isMatched = userService.login(userOriginDto);
+                        UserLoginDTO userOriginDTO = new UserLoginDTO(originUserId, originPassword);
+                        boolean isMatch = userService.login(userOriginDTO);
 
-                        if (isMatched) {
-                            userService.changePassword(originUserId, newPassword);
-                            session.invalidate();
-                            return new BaseResponse<>(SUCCESS_CHANGE_PASSWORD);
+                        if (isMatch) {
+                            userService.modifyPassword(originUserId, newPassword);
+                            // session.invalidate(); 
+                            return new BaseResponse<>(SUCCESS);
                         } else {
                             throw new BaseException(NOT_MATCH_PASSWORD);
                         }
@@ -325,82 +346,143 @@ public class UserController {
                         throw new BaseException(NEED_LOGIN);
                     }
 
-                case "changeNickname":
+                case "modifyNickname":
                     session = request.getSession(false);
                     if (session != null) {
-                        User changeNicknameUser = (User) session.getAttribute("User");
+                        User modifyNicknameUser = (User) session.getAttribute("User");
 
                         // 닉네임 중복 확인 받았다는 가정 하에 ...
-                        String changeNicknameUserId = changeNicknameUser.getUserId();
+                        String modifyNicknameUserId = modifyNicknameUser.getUserId();
                         String newNickname = (String) body.get("newNickname");
 
-                        userService.changeNickname(changeNicknameUserId, newNickname);
-                        return new BaseResponse<>(SUCCESS_CHANGE_NICKNAME);
-                    } else {
-                        throw new BaseException(NEED_LOGIN);
-                    }
-
-                    /*
-                     * 이메일 변경을 위한 인증
-                     */
-                case "sendEmailForChangeEmail":
-                    String userEmailForChange = (String) body.get("userEmailforChange");
-                    RegEx.isValidUserEmail(userEmailForChange);
-
-                    String codeForChange = userService.sendEmail(userEmailForChange);
-                    session = request.getSession();
-                    session.setAttribute("codeForChange", codeForChange);
-                    System.out.println(codeForChange);
-                    return new BaseResponse<>(SUCCESS_SEND_EMAIL);
-
-                /*
-                 * [POST] 이메일 변경을 위한 인증번호 확인하기 ...
-                 */
-                case "confirmCodeforChange":
-                    String userCodeForChange = (String) body.get("userCodeForChange");
-                    if (userCodeForChange == null || "".equals(userCodeForChange)) {
-                        throw new BaseException(INVALID_AUTH_CODE);
-                    }
-                    session = request.getSession(false);
-                    if (session != null) {
-                        String originCodeForChange = (String) session.getAttribute("codeForChange");
-                        if (originCodeForChange != null) {
-                            if (userCodeForChange.equals(originCodeForChange)) {
-                                session.removeAttribute("codeForChange");
-                                return new BaseResponse<>(SUCCESS_AUTH);
-                            } else {
-                                throw new BaseException(INVALID_AUTH_CODE);
-                            }
-                        }
-                    } else {
-                        throw new BaseException(NEED_LOGIN);
-                    }
-
-                case "changeEmail":
-                    session = request.getSession(false);
-                    if (session != null) {
-                        User originUser = (User) session.getAttribute("User");
-
-                        String originUserId = originUser.getUserId();
-                        String newEmail = (String) body.get("newEmail");
-
-                        userService.changeEmail(originUserId, newEmail);
+                        userService.modifyNickname(modifyNicknameUserId, newNickname);
                         return new BaseResponse<>(SUCCESS);
                     } else {
                         throw new BaseException(NEED_LOGIN);
                     }
 
+                /*
+                 * 이메일 변경을 위한 인증
+                 */
+                case "sendEmailForModifyEmail":
+                    session = request.getSession(false);
+                    if (session != null) {
+                        User userEmailModify = (User) session.getAttribute("User");
+                        if (userEmailModify != null) {
+                            String originTryUserEmail = (String) body.get("originTryUserEmail");
+                            String originUserEmail = userService.getUserEmail(userEmailModify);
+
+                            if (originTryUserEmail != null && originTryUserEmail.equals(originUserEmail)) {
+                                String userEmailforModify = (String) body.get("userEmailforModify");
+                                RegEx.isValidUserEmail(userEmailforModify);
+                                String codeForModify = userService.sendEmail(userEmailforModify);
+
+                                session.setAttribute("codeForModify", codeForModify);
+                                System.out.println(codeForModify);
+                                return new BaseResponse<>(SUCCESS);
+                            } else {  // 이메일을 다시 입력해주세요.
+                                throw new BaseException(NOT_MATCH_EMAIL);
+                            }
+                        } else {
+                            throw new BaseException(NEED_LOGIN);
+                        }
+                    } else {
+                        throw new BaseException(NEED_LOGIN);
+                    }
+
+
                     /*
-                     * [POST] 마이페이지
-                     * userId, userName, userPicture, userEmail, userBirthday, userPhonenumber, userPoint
+                     * [POST] 이메일 변경을 위한 인증번호 확인하기 ...
                      */
-                case "viewMyPage":
+                case "confirmCodeforModify":
+                    String userCodeForModify = (String) body.get("userCodeForModify");
+                    if (userCodeForModify == null || "".equals(userCodeForModify)) {
+                        throw new BaseException(INVALID_AUTH_CODE);
+                    }
+                    session = request.getSession(false);
+                    if (session != null) {
+                        String originCodeForModify = (String) session.getAttribute("codeForModify");
+                        if (originCodeForModify != null) {
+                            if (userCodeForModify.equals(originCodeForModify)) {
+                                session.removeAttribute("codeForModify");
+                                session.setAttribute("emailChecked", "yes");
+                                return new BaseResponse<>(SUCCESS);
+                            } else {
+                                session.setAttribute("emailChecked", "no");
+                                session.invalidate();
+                                throw new BaseException(INVALID_AUTH_CODE);
+                            }
+                        } else {
+                            throw new BaseException(INVALID_AUTH_CODE);
+                        }
+                    } else {
+                        throw new BaseException(NEED_LOGIN);
+                    }
+
+                case "modifyEmail":
+                    session = request.getSession(false);
+                    if (session != null) {
+                        String emailChecked = (String) session.getAttribute("emailChecked");
+                        if (emailChecked!=null && emailChecked.equals("yes")){
+                            User originUser = (User) session.getAttribute("User");
+
+                            String originUserId = originUser.getUserId();
+                            String newEmail = (String) body.get("newEmail");
+
+                            userService.modifyEmail(originUserId, newEmail);
+                            return new BaseResponse<>(SUCCESS);
+                        } else {
+                            session.invalidate();
+                            throw new BaseException(NEED_LOGIN);
+                        }
+
+                    } else {
+                        throw new BaseException(NEED_LOGIN);
+                    }
+
+                /*
+                 * [POST] 마이페이지
+                 * userId, userName, userPicture, userEmail, userBirthday, userPhonenumber, userPoint
+                 */
+                case "getMyPage":
                     session = request.getSession(false);
                     if (session != null) {
                         User user = (User) session.getAttribute("User");
-                        String viewUserId = user.getUserId();
-                        MyPageVO myPageVO = userService.viewMyPage(viewUserId);
+                        String getMyPageUserId = user.getUserId();
+                        MyPageVO myPageVO = userService.getMyPage(getMyPageUserId);
                         return new BaseResponse<>(myPageVO);
+                    } else {
+                        throw new BaseException(NEED_LOGIN);
+                    }
+
+                /*
+                 * [POST] 유저 상태메세지 변경
+                 */
+                case "ModifyUserStatusMessage":
+                    User changeStatusUser = (User) session.getAttribute("User");
+                    if (changeStatusUser!=null){
+                        String modifyStatusUserId = changeStatusUser.getUserId();
+                        if (modifyStatusUserId!=null){
+                            String newStatusMessage = (String) body.get("newStatusMessage");
+                            userService.modifyUserStatusMessage(modifyStatusUserId, newStatusMessage);
+                            return new BaseResponse<>(SUCCESS);
+                        } else {
+                            throw new BaseException(NEED_LOGIN);
+                        }
+                    } else {
+                        throw new BaseException(NEED_LOGIN);
+                    }
+
+                /*
+                 * [POST] 친구 게시판에서 모든 유저 보기.
+                 * 유저 아이디, 유저 아이콘, 유저 닉네임, 친구 여부
+                 */
+                case "getAllUserList":
+                    session = request.getSession(false);
+                    if(session!=null){
+                        String userIdForFriendBoard = (String) body.get("userId");
+                        List<UserViewVO> userListAtFriendBoard = userService.getAllUserList(userIdForFriendBoard);
+                        return new BaseResponse<>(userListAtFriendBoard);
                     } else {
                         throw new BaseException(NEED_LOGIN);
                     }
@@ -412,13 +494,6 @@ public class UserController {
 
     /*
      * 카카오 로그인
-     * https://kauth.kakao.com/oauth/authorize?client_id=daad1a19aba64000fb178eb96ad2889d&redirect_uri=https://localhost:8080/dagak/user/kakaoOauth&response_type=code
-     *
-     * api 토큰
-     * daad1a19aba64000fb178eb96ad2889d
-     *
-     * redirect url
-     * https://localhost:8080/dagak/user/kakaoOauth
      */
     @GetMapping("kakaoOauth")
     public BaseResponse<?> kakaoOauth(@RequestParam String code, HttpServletRequest request) {
@@ -442,14 +517,6 @@ public class UserController {
 
     /*
      * 구글 로그인
-     *
-     * 클라이언트 ID : 273219571369-bdo0hmfdde3j8olh6i5j20ln6iulph9h.apps.googleusercontent.com
-     *
-     * 클라이언트 비밀번호 : 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
-     *
-     * redirect urlq
-     *
-     * https://accounts.google.com/o/oauth2/v2/auth?client_id=273219571369-bdo0hmfdde3j8olh6i5j20ln6iulph9h.apps.googleusercontent.com&redirect_uri=https://localhost:8080/dagak/user/googleOauth&response_type=code&scope=email
      */
     @RequestMapping("googleOauth")
     public BaseResponse<?> googleOauth(HttpServletRequest request, @RequestParam(value = "code") String authCode, HttpServletResponse response) throws Exception {
@@ -467,7 +534,23 @@ public class UserController {
             session.setAttribute("googleEamil", googleEamil);
             throw new BaseException(NEED_GOOGLE_LINK);
         }
+    }
+
+    /*
+     * reCAPTCHA
+     */
+    @PostMapping("recaptcha")
+    public void isRobot(@RequestBody Map response, HttpServletRequest request) {
+        String recaptchaResponse = (String) response.get("recaptchaResponse");
+        if ("만료".equals(recaptchaResponse)) {
+            boolean isNotRobot = false;
+            System.out.println("만료됨");
+        } else {
+            boolean isNotRobot = ReCaptchaService.isRobot(recaptchaResponse);
+            System.out.println(isNotRobot);
+        }
 
     }
+
 
 }
