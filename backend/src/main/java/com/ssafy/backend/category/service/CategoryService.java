@@ -10,5 +10,7 @@ public interface CategoryService {
 
     List<Category> getCategories(List<Integer> categoriesId);
 
+    List<Category> getCategoryList();
+
     Page<Mokkoji> getMokkojiList(List<Integer> categories, int page, String keyword);
 }

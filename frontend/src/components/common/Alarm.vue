@@ -1,17 +1,22 @@
 <template>
   <!-- 알림 아이콘 -->
-  <button class="position-relative alarm" data-bs-toggle="modal" data-bs-target="#exampleModal">
+  <button
+    class="position-relative alarm"
+    data-bs-toggle="modal"
+    data-bs-target="#exampleModal"
+  >
     <i class="bi bi-bell"></i>
-    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-      12
+    <span
+      class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+    >
+      {{ alarmStore.alarmUnReadTotal }}
     </span>
   </button>
 </template>
 
-<script>
-  export default {
-    
-  }
+<script setup>
+import { useAlarmStore } from '@/stores/alarm';
+const alarmStore = useAlarmStore();
 </script>
 
 <style lang="scss" scoped>
