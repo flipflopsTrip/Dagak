@@ -24,8 +24,8 @@ export const useUserStore = defineStore(
     const publisherMySession = ref(undefined);
     const APPLICATION_SERVER_URL =
       process.env.NODE_ENV === 'production'
-        ? `${import.meta.env.APPLICATION_SERVER_URL}`
-        : `${import.meta.env.APPLICATION_SERVER_URL}`;
+        ? `${import.meta.env.OPENVIDU_SERVER_URL}`
+        : `${import.meta.env.OPENVIDU_SERVER_URL}`;
     const myUserName = ref(loginUserInfo.value.myUserName);
 
     // 계정 방 입장
@@ -38,7 +38,7 @@ export const useUserStore = defineStore(
     const createMyRoom = async () => {
       console.log('loginUser : ', myUserName);
       const response = await axios.post(
-        APPLICATION_SERVER_URL + 'room',
+        APPLICATION_SERVER_URL + '/room',
         { sign: 'enterMyRoom', userId: myUserName },
         {
           headers: { 'Content-Type': 'application/json' },
@@ -58,7 +58,7 @@ export const useUserStore = defineStore(
 
         await axios.post(
           // 로그인 콜백
-          `${import.meta.env.APPLICATION_SERVER_URL}openvidu/api/signal`,
+          `${import.meta.env.OPENVIDU_SERVER_URL}/openvidu/api/signal`,
           {
             session: stream.data,
             type: 'signal:login-callBack',
@@ -122,7 +122,7 @@ export const useUserStore = defineStore(
         sign: 'viewMyPage',
       };
       await axios
-        .post(`${import.meta.env.APPLICATION_SERVER_URL}dagak/user`, body, {
+        .post(`${import.meta.env.VITE_API_BASE_URL}dagak/user`, body, {
           headers: {
             'Content-Type': 'application/json',
           },

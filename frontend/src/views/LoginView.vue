@@ -91,7 +91,7 @@ const login = async function () {
   };
   console.log(body);
   await axios
-    .post(`${import.meta.env.APPLICATION_SERVER_URL}user`, body, {
+    .post(`${import.meta.env.VITE_API_BASE_URL}user`, body, {
       headers: {
         'Content-Type': 'application/json',
       },
@@ -112,7 +112,7 @@ const recaptchaExpired = async function (response) {
   const body = {
     recaptchaResponse: '만료',
   };
-  await axios.post(`${import.meta.env.APPLICATION_SERVER_URL}user/recaptcha`, body, {
+  await axios.post(`${import.meta.env.VITE_API_BASE_URL}user/recaptcha`, body, {
     headers: {
       'Content-Type': 'application/json',
     },
@@ -123,7 +123,7 @@ const recaptchaVerified = async function (response) {
   const body = {
     recaptchaResponse: response,
   };
-  await axios.post('https://localhost:8080/dagak/user/recaptcha', body, {
+  await axios.post(`${import.meta.env.VITE_API_BASE_URL}user/recaptcha`, body, {
     headers: {
       'Content-Type': 'application/json',
     },
