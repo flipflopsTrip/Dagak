@@ -77,7 +77,7 @@ const logout = function () {
     sign: 'logout',
   };
   axios
-    .post('https://localhost:8080/dagak/user', body)
+    .post(`${import.meta.env.APPLICATION_SERVER_URL}dagak/user`, body)
     .then((res) => res.data)
   userStore.loginUserInfo = {};
   localStorage.removeItem('useStore');

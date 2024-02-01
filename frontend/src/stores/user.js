@@ -24,8 +24,8 @@ export const useUserStore = defineStore(
     const publisherMySession = ref(undefined);
     const APPLICATION_SERVER_URL =
       process.env.NODE_ENV === 'production'
-        ? ''
-        : 'https://localhost:8080/dagak/';
+        ? `${import.meta.env.APPLICATION_SERVER_URL}`
+        : `${import.meta.env.APPLICATION_SERVER_URL}`;
     const myUserName = ref(loginUserInfo.value.myUserName);
 
     // 계정 방 입장
@@ -58,7 +58,7 @@ export const useUserStore = defineStore(
 
         await axios.post(
           // 로그인 콜백
-          'https://i10a404.p.ssafy.io/openvidu/api/signal',
+          `${import.meta.env.APPLICATION_SERVER_URL}openvidu/api/signal`,
           {
             session: stream.data,
             type: 'signal:login-callBack',
@@ -122,7 +122,7 @@ export const useUserStore = defineStore(
         sign: 'viewMyPage',
       };
       await axios
-        .post('https://localhost:8080/dagak/user', body, {
+        .post(`${import.meta.env.APPLICATION_SERVER_URL}dagak/user`, body, {
           headers: {
             'Content-Type': 'application/json',
           },
