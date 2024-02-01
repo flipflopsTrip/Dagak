@@ -94,7 +94,7 @@ const checkAlarm = async function (alarmId) {
     alarmId: alarmId,
   };
 
-  await axios.post('https://localhost:8080/dagak/alarms', body, {
+  await axios.post(`${import.meta.env.VITE_API_BASE_URL}alarms`, body, {
     headers: {
       'Content-Type': 'application/json',
     },
