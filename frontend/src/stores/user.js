@@ -3,6 +3,7 @@ import { defineStore } from 'pinia';
 import axios from 'axios';
 import { OpenVidu } from 'openvidu-browser';
 
+
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 
 export const useUserStore = defineStore(
