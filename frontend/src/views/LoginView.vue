@@ -60,7 +60,7 @@
 
     <vue-recaptcha
       v-show="true"
-      :sitekey="import.meta.env.RECAPTCAH_KEY"
+      :sitekey="recaptchaKey"
       @verify="recaptchaVerified"
       @expire="recaptchaExpired"
       @fail="recaptchaFailed"
@@ -80,6 +80,7 @@ const userStore = useUserStore();
 const router = useRouter();
 const id = ref('');
 const password = ref('');
+const recaptchaKey = ref(import.meta.env.RECAPTCAH_KEY); 
 // const rememberId = ref(false);
 
 //로그인
