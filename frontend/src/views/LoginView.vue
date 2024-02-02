@@ -93,8 +93,9 @@ const disableInputId = ref(true);
 const disableInputPassword = ref(true);
 const disableCheckId = ref(true);
 const disableLoginButton = ref(true);
-const recaptchaKey = ref(`${import.meta.env.VITE_RECAPTCHA_KEY}`);
-
+const recaptchaKey = ref("");
+recaptchaKey.value = `${import.meta.env.VITE_RECAPTCAH_KEY}`;
+console.log(recaptchaKey.value);
 //로그인
 const login = async function () {
   const body = {
