@@ -60,7 +60,7 @@
 
     <vue-recaptcha
       v-show="true"
-      sitekey="6Lcufl8pAAAAAN7h2t1u9Dgm1_zo9wKoaYRX59H6"
+      :sitekey="import.meta.env.RECAPTCAH_KEY"
       @verify="recaptchaVerified"
       @expire="recaptchaExpired"
       @fail="recaptchaFailed"
