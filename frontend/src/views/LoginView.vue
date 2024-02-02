@@ -9,6 +9,7 @@
           <div class="input-group">
             <span class="input-group-text"><i class="bi bi-person"></i></span>
             <input
+              :disabled="disableInputId"
               type="text"
               class="form-control no-outline"
               id="id"
@@ -23,6 +24,7 @@
           <div class="input-group">
             <span class="input-group-text"><i class="bi bi-lock"></i></span>
             <input
+              :disabled="disableInputPassword"
               type="password"
               class="form-control no-outline"
               id="password"
@@ -35,13 +37,14 @@
         </div>
         <div class="mb-3 form-check">
           <input
+            :disabled="disableCheckId"
             type="checkbox"
             class="form-check-input no-outline"
             id="rememberId"
           />
           <label class="form-check-label" for="rememberId">아이디 저장</label>
         </div>
-        <button class="btn btn-primary common-btn" @click="login">
+        <button class="btn btn-primary common-btn" :disabled="disableLoginButton" @click="login">
           로그인
         </button>
         <div class="or-seperator"><i>또는</i></div>
@@ -83,6 +86,12 @@ const password = ref('');
 const recaptchaKey = ref(import.meta.env.RECAPTCAH_KEY); 
 // const rememberId = ref(false);
 
+// reCAPTCHA 
+const disableInputId = ref(true);
+const disableInputPassword = ref(true);
+const disableCheckId = ref(true);
+const disableLoginButton = ref(true);
+
 //로그인
 const login = async function () {
   const body = {
@@ -97,17 +106,26 @@ const login = async function () {
         'Content-Type': 'application/json',
       },
     })
-    .then((res) => res.data);
-  userStore.getLoginUserInfo();
-  //성공 시 홈으로
-  router.push({
-    name: 'home',
-  });
+    .then((res) => {
+      if (res.data.result === null) {
+        userStore.getLoginUserInfo();
+        //성공 시 홈으로
+        router.push({
+          name: 'home',
+        });
+      } else if (res.data.result === '로그인 실패') {
+        alert('로그인 실패');
+      }
+    });
   id.value = '';
   password.value = '';
 };
 
 const recaptchaExpired = async function (response) {
+  disableInputId.value = true;
+  disableInputPassword.value = true;
+  disableCheckId.value = true;``
+  disableLoginButton.value = true;
   const body = {
     recaptchaResponse: '만료',
   };
@@ -115,10 +133,14 @@ const recaptchaExpired = async function (response) {
     headers: {
       'Content-Type': 'application/json',
     },
-  });
+  })
 };
 
 const recaptchaVerified = async function (response) {
+  disableInputId.value = false;
+  disableInputPassword.value = false;
+  disableCheckId.value = false;
+  disableLoginButton.value = false;
   const body = {
     recaptchaResponse: response,
   };
@@ -126,7 +148,8 @@ const recaptchaVerified = async function (response) {
     headers: {
       'Content-Type': 'application/json',
     },
-  });
+  }).then((res) => res.data);
+  userStore.getLoginUserInfo();;
 };
 </script>
 

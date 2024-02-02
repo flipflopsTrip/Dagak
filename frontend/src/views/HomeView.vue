@@ -91,10 +91,12 @@ import MokkojiRanking from '@/components/home/MokkojiRanking.vue';
 import { useUserStore } from '@/stores/user';
 import { useRankStore } from '@/stores/rank';
 import { useCategoryStore } from '@/stores/category';
+import { useAlarmStore } from '@/stores/alarm';
 import SimpleDagak from '@/components/dagak/SimpleDagak.vue';
 const userStore = useUserStore();
 const rankstore = useRankStore();
 const categoryStore = useCategoryStore();
+const alarmStore = useAlarmStore();
 const router = useRouter();
 const mokkojiRank = ref([]);
 
@@ -104,6 +106,7 @@ const navigateToStudyRoom = () => {
 
 onMounted(async () => {
   // store.login();
+  alarmStore.getUnReadAlarmList();
   categoryStore.getCategoryList();
   await rankstore.getMokkojiRank();
   console.log('mokkojiRank.value: ', rankstore.mokkojiRank);
