@@ -83,7 +83,7 @@ const userStore = useUserStore();
 const router = useRouter();
 const id = ref('');
 const password = ref('');
-const recaptchaKey = ref(import.meta.env.RECAPTCAH_KEY); 
+
 // const rememberId = ref(false);
 
 // reCAPTCHA 
@@ -91,6 +91,7 @@ const disableInputId = ref(true);
 const disableInputPassword = ref(true);
 const disableCheckId = ref(true);
 const disableLoginButton = ref(true);
+const recaptchaKey = ref(`${import.meta.env.VITE_RECAPTCHA_KEY}`);
 
 //로그인
 const login = async function () {
