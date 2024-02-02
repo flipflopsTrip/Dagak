@@ -2,14 +2,14 @@
   <div class="common-mypage-wrapper">
     <div class="common-mypage-title">인벤토리</div>
     <div class="inven-content-wrapper">
-      <div class="inven-wearing">
+      <div class="inven-wearing" >
         <div class="inven-wearing-now" ref ="captureArea">
-          <img src="/public/img/item/정육면체.png" class="main-item">
-          <div v-for="item in inventories" :key="item.inventoryId" >
-            <img :src="item.productImage" v-if="item.isWearing"  class="main-item">
-          </div>
+            <img src="/public/img/item/정육면체.png" class="main-item" >
+            <template v-for="item in inventories" :key="item.inventoryId" >
+              <img :src="item.productImage" v-if="item.isWearing"  class="main-item">
+            </template>
         </div>
-        <div class="inven-wearing-list text-center">
+        <div class="inven-wearing-list text-center" >
           <div>착용중</div>
           <div  v-for="item in inventories" :key="item.inventoryId">
             <div v-if="item.isWearing">
@@ -43,7 +43,7 @@ async function changeItem(inventoryId){
     if(e.inventoryId == inventoryId){
       if(e.isWearing == 1){
         e.isWearing = 0;
-        const body  = {sign : "takeOff", takeOffItem : e.inventoryId}
+        const body  = {sign : "unEquip", takeOffItem : e.inventoryId}
         axios.post(`${import.meta.env.VITE_API_BASE_URL}inventory/` , body);
       } 
       else{
@@ -52,7 +52,7 @@ async function changeItem(inventoryId){
           if(e.category.productCategoryId == item.category.productCategoryId){
             if(item.isWearing == 1){
               item.isWearing = 0;
-              const body  = {sign : "takeOff", takeOffItem : e.inventoryId}
+              const body  = {sign : "unEquip", takeOffItem : e.inventoryId}
               axios.post(`${import.meta.env.VITE_API_BASE_URL}inventory/` , body);
  
             }
@@ -72,10 +72,9 @@ const saveInventory = async function () {
     }
   });
   console.log(itemList);
-  const body = { sign : "save", itemList}
+  const body = { sign : "equip", itemList}
   const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}inventory/` , body);
-  const data = await captureAndSend();
-  console.log(data)
+  captureAndSend();
   alert(response.data.message);
 };
 const getInventory = async function () {
@@ -84,11 +83,14 @@ const getInventory = async function () {
 
 const captureAndSend = async () => {
   if (!captureArea.value) return;
-
-  const canvas = await html2canvas(captureArea.value);
+  const element = document.querySelector(".inven-wearing-now");
+  console.log(element)
+  const canvas = await html2canvas(element);
+  console.log(canvas)
   const dataUrl = canvas.toDataURL("image/png");
 
   const response = await fetch(dataUrl);
+
   const blob = await response.blob();
 
   const file = new File([blob], "screenshot.png", { type: "image/png" });
@@ -106,6 +108,7 @@ const captureAndSend = async () => {
     console.error(error);
   });
 };
+
 
 
 
@@ -137,6 +140,8 @@ $box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
     box-shadow: $box-shadow;
 
     .inven-wearing-now {
+      width: 200px;
+      height: 150px;
       text-align: center;
       position: absolute;
       .main-item {

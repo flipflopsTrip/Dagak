@@ -96,11 +96,9 @@ const login = async function () {
         'Content-Type': 'application/json',
       },
     })
-    .then(
-      (res) => res.data
-      )
+    .then((res) => res.data);
   userStore.getLoginUserInfo();
-      //성공 시 홈으로
+  //성공 시 홈으로
   router.push({
     name: 'home',
   });

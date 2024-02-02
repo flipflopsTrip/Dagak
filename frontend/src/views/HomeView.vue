@@ -67,7 +67,13 @@
         <SimpleDagak />
       </div>
 
-      <button class="startbutton" v-if="userStore.loginUserInfo.userId" @click="navigateToStudyRoom">공부시작</button>
+      <button
+        class="startbutton"
+        v-if="userStore.loginUserInfo.userId"
+        @click="navigateToStudyRoom"
+      >
+        공부시작
+      </button>
     </div>
     <div class="part two">
       <MyRanking />
@@ -84,9 +90,11 @@ import MyRanking from '@/components/home/MyRanking.vue';
 import MokkojiRanking from '@/components/home/MokkojiRanking.vue';
 import { useUserStore } from '@/stores/user';
 import { useRankStore } from '@/stores/rank';
+import { useCategoryStore } from '@/stores/category';
 import SimpleDagak from '@/components/dagak/SimpleDagak.vue';
 const userStore = useUserStore();
 const rankstore = useRankStore();
+const categoryStore = useCategoryStore();
 const router = useRouter();
 const mokkojiRank = ref([]);
 
@@ -96,6 +104,7 @@ const navigateToStudyRoom = () => {
 
 onMounted(async () => {
   // store.login();
+  categoryStore.getCategoryList();
   await rankstore.getMokkojiRank();
   console.log('mokkojiRank.value: ', rankstore.mokkojiRank);
 });

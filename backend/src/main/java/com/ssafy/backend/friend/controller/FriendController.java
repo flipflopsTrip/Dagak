@@ -44,19 +44,19 @@ public class FriendController {
 
         switch (sign) {
             /**
-             * [POST] /friend
-             * @return ResponseEntity<HttpResponseBody < String>>
+             * [POST] /requestFriend
+             * @return BaseResponse<BaseResponseStatus>
              * 친구 요청을 처리
              **/
-            case "request":
+            case "requestFriend":
                 String userId2 = (String) body.get("userId");  // 요청하고싶은 친구 userId
 
                 friendFacade.requestFriend(userId, userId2);
 
                 return new BaseResponse<>(SUCCESS);
             /**
-             * [POST] /friend
-             * @return ResponseEntity<HttpResponseBody < String>>
+             * [POST] /accessFriend
+             * @return BaseResponse<BaseResponseStatus>
              * 친구 요청에 대해서 승인
              **/
             case "accessFriend":

@@ -3,7 +3,7 @@ package com.ssafy.backend.mokkoji.service;
 import com.ssafy.backend.alarm.model.dto.ReqestAlarmDTO;
 import com.ssafy.backend.alarm.service.AlarmService;
 import com.ssafy.backend.category.model.domain.Category;
-import com.ssafy.backend.category.model.dto.CategoryDto;
+import com.ssafy.backend.category.model.dto.CategoryDTO;
 import com.ssafy.backend.category.service.CategoryService;
 import com.ssafy.backend.common.exception.BaseException;
 import com.ssafy.backend.mokkoji.model.domain.Mokkoji;
@@ -43,11 +43,11 @@ public class MokkojiFacade {
     private final AlarmService alarmService;
 
     @Transactional(rollbackFor = Exception.class)
-    public void saveMokkoji(MokkojiCreateRequestDto dto){
+    public void saveMokkoji(MokkojiCreateRequestDTO dto){
 
         User user = userService.canAddMokkoji(dto.getLeaderId(), CREATE_MOKKOJI_POINT);
         Mokkoji mokkoji = mokkojiService.addMokkoji(dto.toEntity());
-        List<Category> categories = categoryService.getCategories(dto.getMokkojiCategories());
+        List<Category> categories = categoryService.getCategoryList(dto.getMokkojiCategories());
         //이거 나중에 saveAll로 바꿔야함
         for (Category category : categories) {
             mokkojiCategoryService.addMokkjiCategory(mokkoji, category);
@@ -61,13 +61,13 @@ public class MokkojiFacade {
         log.info("모꼬지 이름 랭킹 검색입니다.{}",byMokkojiName);
         MokkojiRankings mokkojiRankings = byMokkojiName.get(0);
 
-        MokkojiRankDto mokkojiDto = new MokkojiRankDto(mokkojiRankings);
-        List<Category> categoriesEntities = categoryService.getCategories(mokkojiRankings.getCategories());
+        MokkojiRankDTO mokkojiDTO = new MokkojiRankDTO(mokkojiRankings);
+        List<Category> categoriesEntities = categoryService.getCategoryList(mokkojiRankings.getCategories());
 
-        List<CategoryDto> categories = categoriesEntities
-                .stream().map(CategoryDto::new)
+        List<CategoryDTO> categories = categoriesEntities
+                .stream().map(CategoryDTO::new)
                 .collect(Collectors.toList());
-        return new MokkojiRankingsVO(categories, mokkojiDto);
+        return new MokkojiRankingsVO(categories, mokkojiDTO);
     }
 
     public List<MokkojiRankingsVO> geTmokkojiTopTen() {
@@ -75,10 +75,10 @@ public class MokkojiFacade {
         List<MokkojiRankings> topTen = mokkojiRankingService.getRankingTopTen();
         log.info("모꼬지 이름 탑텐입니다.{}",topTen);
         for (MokkojiRankings mokkojiRankings: topTen) {
-            MokkojiRankDto mokkojiDto = new MokkojiRankDto(mokkojiRankings);
-            List<Category> categoriesEntities = categoryService.getCategories(mokkojiRankings.getCategories());
-            List<CategoryDto> categories = categoriesEntities
-                    .stream().map(CategoryDto::new)
+            MokkojiRankDTO mokkojiDto = new MokkojiRankDTO(mokkojiRankings);
+            List<Category> categoriesEntities = categoryService.getCategoryList(mokkojiRankings.getCategories());
+            List<CategoryDTO> categories = categoriesEntities
+                    .stream().map(CategoryDTO::new)
                     .collect(Collectors.toList());
             list.add(new MokkojiRankingsVO(categories, mokkojiDto));
         }
@@ -101,8 +101,8 @@ public class MokkojiFacade {
         log.info("전체 페이지 수: {}", mokkojiList.getTotalPages());
         Map<Mokkoji, List<Category>> map = mokkojiCategoryService.getMokkojis(mokkojiList);
 
-        List<MokkojiCategoryDto> list = map.entrySet().stream().map(e -> {
-            return new MokkojiCategoryDto(e.getValue(), e.getKey());
+        List<MokkojiCategoryDTO> list = map.entrySet().stream().map(e -> {
+            return new MokkojiCategoryDTO(e.getValue(), e.getKey());
         }).collect(Collectors.toList());
 
         return new MokkojiListVO(list, mokkojiList.getTotalPages());
@@ -157,7 +157,7 @@ public class MokkojiFacade {
     }
 
     @Transactional
-    public void applyForMokkoji(MokkojiApplyForRequestDto dto) {
+    public void applyForMokkoji(MokkojiApplyForRequestDTO dto) {
         User user = userService.isExistUser(dto.getUserId());
         if(user.getMokkojiId() != null)
             throw new BaseException(ALREADY_EXIST_USER_MOKKOJI);
