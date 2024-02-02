@@ -6,7 +6,7 @@ import { OpenVidu } from 'openvidu-browser';
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 
 export const useUserStore = defineStore(
-  'useStore',
+  'userStore',
   () => {
     const mySessionToken = ref('');
     const studyRoomSessionToken = ref('');
@@ -26,7 +26,6 @@ export const useUserStore = defineStore(
       process.env.NODE_ENV === 'production'
         ? ''
         : 'https://localhost:8080/dagak/';
-    const myUserName = ref(loginUserInfo.value.myUserName);
 
     // 계정 방 입장
     const enterMyRoom = async () => {
@@ -36,10 +35,10 @@ export const useUserStore = defineStore(
 
     // 계정 방 생성
     const createMyRoom = async () => {
-      console.log('loginUser : ', myUserName);
+      console.log('loginUser : ', loginUserInfo.value.userId);
       const response = await axios.post(
         APPLICATION_SERVER_URL + 'room',
-        { sign: 'enterMyRoom', userId: myUserName },
+        { sign: 'enterMyroom', userId: loginUserInfo.value.userId },
         {
           headers: { 'Content-Type': 'application/json' },
         },
@@ -62,7 +61,7 @@ export const useUserStore = defineStore(
           {
             session: stream.data,
             type: 'signal:login-callBack',
-            data: myUserName.value,
+            data: loginUserInfo.value.userId,
           },
           {
             headers: {
@@ -84,7 +83,7 @@ export const useUserStore = defineStore(
 
       enterMyRoom().then((token) => {
         mySession.value
-          .connect(token, myUserName.value )
+          .connect(token, loginUserInfo.value.userId)
           .then(() => {
             publisherMySession.value = OVMy.value.initPublisher(undefined, {
               audioSource: undefined,
@@ -102,7 +101,7 @@ export const useUserStore = defineStore(
 
             // --- 6) Publish your stream ---;
             mySession.value.publish(publisherMySession.value);
-            console.log(loginUser.value.id+'에 로그인했습니다.');
+            // console.log(loginUser.value.id + '에 로그인했습니다.');
           })
           .catch((error) => {
             console.log(
@@ -116,31 +115,27 @@ export const useUserStore = defineStore(
 
     //로그인 즉시 유저정보 저장
     //userId, userName, userNickname, userPicture, userEmail, userPhonenumber, userBirthday, userPoint, mokkojiId, mokkojiName, userRank
-    
+
     const getLoginUserInfo = async function () {
       const body = {
-        sign: 'viewMyPage',
+        sign: 'getMyPage',
       };
-      await axios
-        .post('https://localhost:8080/dagak/user', body, {
+      axios
+        .post(`${import.meta.env.VITE_API_BASE_URL}user`, body, {
           headers: {
             'Content-Type': 'application/json',
           },
         })
-        .then((res) => res.data)
-        .then((json) => {
-          loginUserInfo.value = json.result;
-          loginUserInfo.value.sub = "SQLD";
-          console.log("회원정보: "+loginUserInfo.value);
-          // localStorage.setItem('userStore', JSON.stringify(loginUserInfo.value));
-        });
+        .then((res) => {
+          loginUserInfo.value = res.data.result;
+          loginUserInfo.value.sub = 'SQLD';
+        }).then(()=> login())
     };
 
-    const deleteLoginUserInfo = ()=>{
+    const deleteLoginUserInfo = () => {
       loginUserInfo.value = {};
-    }
+    };
     return {
-      myUserName,
       APPLICATION_SERVER_URL,
       login,
       OVMy,
@@ -155,7 +150,7 @@ export const useUserStore = defineStore(
       deleteLoginUserInfo,
       mySessionToken,
       studyRoomSessionToken,
-    }
+    };
   },
   //store를 localStorage에 저장하기 위해서(새로고침 시 데이터 날라감 방지)
   { persist: true },
