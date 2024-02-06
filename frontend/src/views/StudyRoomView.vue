@@ -298,16 +298,16 @@ const leaveSession = async () => {
   OV.value = undefined
 
   const response = await axios
-      .post(
-          APPLICATION_SERVER_URL + 'room',
-          { sign: 'leaveSession', leave: leave.value},
-          {
-            headers: { 'Content-Type': 'application/json' }
-          }
-      )
-      .then(() => {
-        alert('퇴실완료.')
-      })
+    .post(
+      APPLICATION_SERVER_URL + 'room',
+      { sign: 'leaveSession', leave: leave.value},
+      {
+        headers: { 'Content-Type': 'application/json' }
+      }
+    )
+    .then(() => {
+      alert('퇴실완료.')
+    })
 
   // window.removeEventListener("beforeunload", leaveSession(true));
 }
