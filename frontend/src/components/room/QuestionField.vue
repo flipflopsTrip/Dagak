@@ -44,18 +44,18 @@ const sendQuestion = async function () {
     return
   }
 
-  sendAxios()
-  // sendAxios(2)
-  // sendAxios(3)
+  sendAxios(1)
+  sendAxios(2)
+  sendAxios(3)
   question.value = ''
 }
 
-const sendAxios = function () {
+const sendAxios = function (number) {
   console.log('mySession: ' + mySession.value)
   console.log('숫자가 붙은 세션?: ' + userStore.loginUserInfo.sub)
   const body = {
     sign: 'askQuestion',
-    session: mySession.value + '3',
+    session: mySession.value + number,
     userId: userStore.loginUserInfo.userId,
     data: question.value
   }
