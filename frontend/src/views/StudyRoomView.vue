@@ -14,8 +14,8 @@
       <div class="lastlater">
         <div class="lastname">java 마스터 3:40</div>
         <div class="latername">C++ 마스터 ~10:20</div>
-        <!-- <button class="questiontoggle" @click="toggleQuestion">질문하기✋</button>
-        <button class="closebtn" @click="leaveStudyRoom">나가기🚪</button> -->
+        <!-- <button class="questiontoggle" @click="toggleQuestion">질문하기✋</button> -->
+        <button class="closebtn" @click="leaveStudyRoom">나가기🚪</button>
       </div>
     </div>
     <div class="bar">
@@ -88,7 +88,7 @@
           </template>
         </div>
       </div>
-      <!-- <StudyRateView /> -->
+      <!-- <StudyRateView :sec="sec" :remainTime="remainTime" :categoryName="categoryName" /> -->
     </div>
   </div>
   <!-- <div class="black" v-if="isPause">
@@ -116,6 +116,15 @@ import { useDagakStore } from '@/stores/dagak'
 import QnAListView from '@/components/room/QnAListView.vue'
 
 axios.defaults.headers.post['Content-Type'] = 'application/json'
+
+function mapSubject(subject) {
+  const subjectMap = {
+    국어: 'korean',
+    수학: 'math',
+    영어: 'english'
+  }
+  return subjectMap[subject] || 'Unknown'
+}
 
 const dagakStore = useDagakStore()
 
@@ -253,6 +262,8 @@ onBeforeMount(async () => {
       userId.value = result.userId
       gakOrder.value = result.gakOrder
       memoryTime.value = result.memoryTime
+      // store.loginUserInfo.sub = 'Math'
+      store.loginUserInfo.sub = mapSubject(result.categoryName)
 
       alert(result.categoryName + '방에 입장합니다.')
       categoryName.value = result.categoryName
@@ -264,7 +275,7 @@ onBeforeMount(async () => {
     })
 
   // TODO : redis에 저장된 질문/ 답변을 불러와서, QnAListView에 뿌려주기
-  alert('studyRoom onBeforeMount!!!!!!!!!!!!!!!!!!')
+  console.log('studyRoom onBeforeMount!!!!!!!!!!!!!!!!!!')
   const body = {
     sign: 'getSessionQnA'
   }
@@ -277,10 +288,10 @@ onBeforeMount(async () => {
         const subQuestions = res.data.result.questionVOList
         if (subQuestions) {
           subQuestions.forEach(async (element) => {
-            alert('data : ' + element.data)
-            await questionStore.setQuestion(element.data)
+            alert('data : ' + element)
+            await questionStore.setQuestion(element)
           })
-          // questionStore.setQuestion()
+          console.log('question 제발 : ' + question.value)
         }
       }
     })
