@@ -144,7 +144,7 @@ const publisher = ref(undefined)
 const subscribers = ref([])
 const question = ref('')
 const leave = ref('refresh')
-// const achievementRate = ref(0)
+const achievementRate = ref(0)
 
 const change = ref(false)
 
@@ -219,7 +219,7 @@ onBeforeMount(async () => {
       gakId.value = result.gakId
       userId.value = result.userId
       gakOrder.value = result.gakOrder
-      memoryTime.value = result.memoryTime
+      // memoryTime.value = result.memoryTime
       // store.loginUserInfo.sub = 'Math'
       store.loginUserInfo.sub = mapSubject(result.categoryName)
 
@@ -227,7 +227,7 @@ onBeforeMount(async () => {
       categoryName.value = result.categoryName
       const achievementRate = result.memoryTime / result.totalTime
       if (achievementRate >= 1) {
-        achievementRate.value = 1
+        // achievementRate.value = 1
       } else {
         // remainTime.value = (result.totalTime - result.memoryTime);
         remainTime.value = result.requiredStudyTime
@@ -250,8 +250,11 @@ onBeforeMount(async () => {
         const subQuestions = res.data.result.questionVOList
         if (subQuestions) {
           subQuestions.forEach(async (element) => {
-            alert('data : ' + element)
+            // alert('data : ' + element)
+            // 질문 리스트
             await questionStore.setQuestion(element)
+            // 답변 리스트
+            getAnswerForQuestion(element.questionId)
           })
           console.log('question 제발 : ' + question.value)
         }
@@ -262,6 +265,26 @@ onBeforeMount(async () => {
       console.log('session 질문(redis) 가져오기 실패!!!!!!!!!!! ')
     })
 })
+
+async function getAnswerForQuestion(questionId) {
+  const body = {
+    sign: 'findAnswer',
+    questionId: questionId
+  }
+
+  await axios
+    .post(`${import.meta.env.VITE_API_BASE_URL}room`, body)
+    .then((res) => {
+      {
+        console.log('questionId에 따른 답변 : ', res.data.result)
+        questionStore.setAnswer(res.data.result)
+      }
+    })
+    .catch((e) => {
+      alert(e)
+      console.log('session 질문의 답변(RDB) 가져오기 실패ㅜㅜㅜㅜ')
+    })
+}
 
 // 플래그
 

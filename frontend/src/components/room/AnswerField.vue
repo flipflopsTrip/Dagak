@@ -54,7 +54,7 @@ const sendAxios = function (sessionNumbser) {
   // alert(body.session + ' ' + body.data + ' ' + body.questionId + ' ' + body.userId)
 
   axios.post(`${import.meta.env.VITE_API_BASE_URL}room`, body).then((res) => {
-    console.log('답변 결과' + res.data)
+    console.log('답변 결과' + res.data.result)
   })
 }
 </script>
