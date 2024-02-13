@@ -22,13 +22,12 @@ import { useUserStore } from '@/stores/user'
 
 const question = ref('')
 const userStore = useUserStore()
-const loginUserInfo = userStore.loginUserInfo
+const mySession = ref(userStore.loginUserInfo.sub)
 
 const checkStore = function () {
   console.log('userStore : ' + userStore)
   if (userStore == null || userStore == undefined) {
     userStore = useUserStore()
-    loginUserInfo = userStore.loginUserInfo
   }
 }
 
@@ -37,23 +36,27 @@ const sendQuestion = async function () {
   checkStore()
   // alert('질문이 등록되었습니다.')
   // console.log('loginUserInfo : ' + loginUserInfo)
+  mySession.value = userStore.loginUserInfo.sub
+  alert('mySession : ', mySession.value)
 
   if (question.value == '') {
     alert('질문을 입력해주세요.')
     return
   }
 
-  sendAxios(1)
-  sendAxios(2)
-  sendAxios(3)
+  sendAxios()
+  // sendAxios(2)
+  // sendAxios(3)
   question.value = ''
 }
 
-const sendAxios = function (sessionNumbser) {
+const sendAxios = function () {
+  console.log('mySession: ' + mySession.value)
+  console.log('숫자가 붙은 세션?: ' + userStore.loginUserInfo.sub)
   const body = {
     sign: 'askQuestion',
-    session: loginUserInfo.sub + sessionNumbser,
-    userId: loginUserInfo.userId,
+    session: mySession.value + '3',
+    userId: userStore.loginUserInfo.userId,
     data: question.value
   }
   // alert(body.session + body.userId + body.data)
