@@ -23,7 +23,7 @@
       <button class="ratetoggle" @click="toggleRate">달성률</button>
       <button class="questiontoggle" @click="toggleQuestion">질문하기</button>
     </div>
-    <QnAListView />
+
     <div class="containers">
       <div class="video-players">
         <div class="video-player-3">
@@ -89,6 +89,7 @@
           </template>
         </div>
       </div>
+      <QnAListView />
       <!-- <StudyRateView :sec="sec" :remainTime="remainTime" :categoryName="categoryName" /> -->
     </div>
   </div>
