@@ -2,14 +2,12 @@ import { ref } from 'vue'
 import { defineStore } from 'pinia'
 
 export const useQuestionStore = defineStore('questionStore', () => {
-  // state: () => {
-  //   return {
-  //     // all these properties will have their type inferred automatically
-  //     question: []
-  //   }
-  // }
   const question = ref([])
   const answer = ref(new Map())
+
+  // watch(question, (newValue, oldValue) => {
+  //   console.log('count가 변경되었습니다:', newValue, oldValue)
+  // })
 
   const setQuestion = async function (data) {
     // console.log('question : ' + data)

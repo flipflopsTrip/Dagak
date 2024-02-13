@@ -23,8 +23,9 @@
 import { useQuestionStore } from '@/stores/qustion'
 import AnswerView from './AnswerView.vue'
 import AnswerField from './AnswerField.vue'
-import { ref, reactive } from 'vue'
+import { ref, reactive, onBeforeMount, onMounted } from 'vue'
 import { useUserStore } from '@/stores/user'
+import axios from 'axios'
 
 // 질문(pinia)
 const questionStore = useQuestionStore()
@@ -38,6 +39,13 @@ const answer = reactive(questions.map(() => false))
 const showAnswer = function (index) {
   answer[index] = !answer[index]
 }
+
+onBeforeMount(async () => {
+  console.log('onBeforeMount questions : ', questions)
+})
+onMounted(() => {
+  console.log('onMounted questions : ', questions)
+})
 </script>
 
 <style scoped>

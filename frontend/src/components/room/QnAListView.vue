@@ -11,6 +11,13 @@
 import AnswerView from './AnswerView.vue'
 import QuestionView from './QuestionView.vue'
 import QuestionField from '@/components/room/QuestionField.vue'
+import { onBeforeMount } from 'vue'
+import { useQuestionStore } from '@/stores/qustion'
+import axios from 'axios'
+
+const questionStore = useQuestionStore()
+
+onBeforeMount(async () => {})
 </script>
 
 <style scoped>
@@ -27,7 +34,6 @@ import QuestionField from '@/components/room/QuestionField.vue'
   margin-top: 30px;
   margin-bottom: 30px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 그림자 효과 추가 */
-
 }
 
 .QnA h4 {

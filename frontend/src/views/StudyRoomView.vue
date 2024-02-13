@@ -264,12 +264,30 @@ onBeforeMount(async () => {
     })
 
   // TODO : redis에 저장된 질문/ 답변을 불러와서, QnAListView에 뿌려주기
-
-  await axios.post(`${import.meta.env.VITE_API_BASE_URL}/dagak`, {
-    "sign" : "getSessionQnA"
-  }).then((res) => {{
-    alert("session 질문(redis) 가져오기 : ", res.data.result)
+  alert('studyRoom onBeforeMount!!!!!!!!!!!!!!!!!!')
+  const body = {
+    sign: 'getSessionQnA'
   }
+  await axios
+    .post(`${import.meta.env.VITE_API_BASE_URL}room`, body)
+    .then((res) => {
+      {
+        // alert('session 질문(redis) 가져오기 : ', res.data.result.questionVOList)
+        console.log('session 질문(redis) 가져오기 : ', res.data.result.questionVOList)
+        const subQuestions = res.data.result.questionVOList
+        if (subQuestions) {
+          subQuestions.forEach(async (element) => {
+            alert('data : ' + element.data)
+            await questionStore.setQuestion(element.data)
+          })
+          // questionStore.setQuestion()
+        }
+      }
+    })
+    .catch((e) => {
+      alert(e)
+      console.log('session 질문(redis) 가져오기 실패!!!!!!!!!!! ')
+    })
 })
 
 // 플래그
@@ -487,14 +505,7 @@ const leaveSession = async () => {
     .then(() => {
       alert('퇴실완료.')
     })
-
-  // window.removeEventListener("beforeunload", leaveSession(true));
 }
-
-// const updateMainVideoStreamManager = (stream) => {
-//   if (mainStreamManager.value === stream) return
-//   mainStreamManager.value = stream
-// }
 
 const updateMainVideoStreamManager = (stream) => {
   mainStreamManager.value = stream
@@ -524,7 +535,7 @@ const togglePause = () => {
   isPause.value = !isPause.value
 }
 
-onMounted(() => {
+onMounted(async () => {
   leaveSession().then(() => {
     joinSession()
   })
@@ -535,8 +546,6 @@ onBeforeUnmount(() => {
   alert('스터디룸에서 다른 페이지로 라우팅!')
   leaveSession()
 })
-console.log('구독자들: ', subscribers.length)
-console.log('구독자들: ', subscribers.value.length)
 </script>
 
 <style>
