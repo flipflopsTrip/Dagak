@@ -607,8 +607,6 @@ onBeforeUnmount(() => {
   leaveSession()
 })
 
-console.log('구독자들: ', subscribers.length)
-console.log('구독자들: ', subscribers.value.length)
 </script>
 
 <style lang="scss" scoped>
