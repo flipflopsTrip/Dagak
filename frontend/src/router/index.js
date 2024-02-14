@@ -14,6 +14,16 @@ const router = createRouter({
       component: () => import('@/views/LoginView.vue'),
     },
     {
+      path: '/googleLogin',
+      name: 'googleLogin',
+      component: () => import('@/views/GoogleLoginView.vue'),
+    },
+    {
+      path: '/kakaoLogin',
+      name: 'kakaoLogin',
+      component: () => import('@/views/KakaoLoginView.vue'),
+    },
+    {
       path: '/regist',
       name: 'regist',
       component: () => import('@/components/user/UserRegist.vue'),
@@ -44,6 +54,18 @@ const router = createRouter({
           component: () => import('@/components/mypage/MyPageSchedule.vue'),
         },
         {
+          path: 'mydagak',
+          name: 'myPageScheduleDagak',
+          component: () =>
+            import('@/components/mypage/MyPageScheduleDagak.vue'),
+        },
+        {
+          path: 'adddate',
+          name: 'myPageScheduleAddDate',
+          component: () =>
+            import('@/components/mypage/MyPageScheduleAddDate.vue'),
+        },
+        {
           path: 'friend',
           name: 'myPageFriend',
           component: () => import('@/components/mypage/MyPageFriend.vue'),
@@ -70,10 +92,24 @@ const router = createRouter({
         },
       ],
     },
+
     {
       path: '/studyroom',
       name: 'studyroom',
       component: () => import('@/views/StudyRoomView.vue'),
+      children: [
+        {
+          path: 'qna',
+          name: 'QnAList',
+          component: () => import('@/components/room/QnAListView.vue'),
+        },
+        {
+          path: 'studyRate',
+          name: 'studyRate',
+          component: () => import('@/components/room/StudyRateView.vue'),
+          props: true,
+        },
+      ],
     },
     {
       // :모꼬지pk 나중에 넣자
@@ -86,7 +122,35 @@ const router = createRouter({
       name: 'apply',
       component: () => import('@/views/ApplyView.vue'),
     },
+
+    {
+      path: '/posts',
+      name: 'postList',
+      component: () => import('@/views/posts/PostListView.vue'),
+    },
+    {
+      path: '/posts/create',
+      name: 'postCreate',
+      component: () => import('@/views/posts/PostCreateView.vue'),
+    },
+    {
+      path: '/posts/:id',
+      name: 'postDetail',
+      component: () => import('@/views/posts/PostDetailView.vue'),
+    },
+    {
+      path: '/posts/:id/edit',
+      name: 'postEdit',
+      component: () => import('@/views/posts/PostEditView.vue'),
+    },
   ],
 });
-
+router.beforeEach((to, from, next) => {
+  if (to.path === '/') {
+    document.body.style.overflow = 'hidden';
+  } else {
+    document.body.style.overflow = 'auto';
+  }
+  next();
+});
 export default router;
