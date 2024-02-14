@@ -98,8 +98,7 @@ console.log(todayDagak)
 
 .rate {
   padding: 2px;
-
-  background-color: white;
+  background-color: rgba(255, 255, 0, 0.8);
   width: 320px;
   height: fit-content;
   // box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
