@@ -1,104 +1,111 @@
 <template>
-  <div class="room">
-    <div class="studyroomheader">
-      <div class="nowname">
-        <div class="nametag">{{ store.loginUserInfo.sub }} ({{ subscribers.length + 1 }})</div>
-        <img class="mute" @click="toggleMute" src="@/assets/img/studyroom/mute.png" alt="음소거" />
-        <img
-          class="pause"
-          @click="togglePause"
-          src="@/assets/img/studyroom/pause.png"
-          alt="휴식중"
-        />
-        <button class="btn" @click="leaveStudyRoom">나가기</button>
+  <div class="space">
+    <div class="room">
+      <div class="studyroomheader div3">
+        <div class="nowname">
+          <div class="nametag">{{ store.loginUserInfo.sub }} ({{ subscribers.length + 1 }})</div>
+          <img
+            class="mute"
+            @click="toggleMute"
+            src="@/assets/img/studyroom/mute.png"
+            alt="음소거"
+          />
+          <img
+            class="pause"
+            @click="togglePause"
+            src="@/assets/img/studyroom/pause.png"
+            alt="휴식중"
+          />
+        </div>
+        <div class="lastlater">
+          <div class="lastname">java 마스터 3:40</div>
+          <div class="latername">C++ 마스터 ~10:20</div>
+        </div>
       </div>
-      <div class="lastlater">
-        <div class="lastname">java 마스터 3:40</div>
-        <div class="latername">C++ 마스터 ~10:20</div>
+      <div class="bar">
+        <!-- <button class="ratetoggle" @click="toggleRate">달성률</button> -->
       </div>
-    </div>
-    <div class="bar">
-      <button class="ratetoggle" @click="toggleRate">달성률</button>
-      <button class="questiontoggle" @click="toggleQuestion">질문하기</button>
-    </div>
-    <QnAListView />
-    <div class="containers">
-      <div class="video-players">
-        <div class="video-player-3">
-          <div class="bigvideo" ref="video13">
-            <!-- 첫 번째 subscriber가 없는 경우에만 mainStreamManager를 표시 -->
-            <user-video v-if="subscribers.length === 0" :stream-manager="mainStreamManager" />
-            <!-- 첫 번째 subscriber가 있는 경우에는 해당 subscriber를 표시 -->
-            <user-video
-              v-else
-              :stream-manager="subscribers[0]"
-              @click.native="updateMainVideoStreamManager(subscribers[0])"
-            />
+      <!-- <StudyRateView :sec="sec" :remainTime="remainTime" :categoryName="categoryName" /> -->
+      <!-- <QnAListView /> -->
+      <div class="containers">
+        <div class="video-players div2">
+          <div class="video-player-1">
+            <div class="bigvideo" ref="video13">
+              <!-- 첫 번째 subscriber가 없는 경우에만 mainStreamManager를 표시 -->
+              <user-video v-if="subscribers.length === 0" :stream-manager="mainStreamManager" />
+              <!-- 첫 번째 subscriber가 있는 경우에는 해당 subscriber를 표시 -->
+              <user-video
+                v-else
+                :stream-manager="subscribers[0]"
+                @click.native="updateMainVideoStreamManager(subscribers[0])"
+              />
+            </div>
+          </div>
+          <div class="video-player-2" v-if="subscribers.length > 0">
+            <!-- 총 2명 -->
+            <template v-if="subscribers.length === 1">
+              <user-video class="videog2" :stream-manager="mainStreamManager" />
+            </template>
+            <!-- 총 3명 -->
+            <template v-if="subscribers.length === 2">
+              <user-video class="videog3" :stream-manager="mainStreamManager" />
+              <user-video
+                class="videog3"
+                v-for="(sub, index) in subscribers.slice(1, 2)"
+                :key="index"
+                :stream-manager="sub"
+                @click.native="updateMainVideoStreamManager(sub)"
+              />
+            </template>
+            <!-- 총 4명 -->
+            <template v-else-if="subscribers.length === 3">
+              <user-video class="videog4" :stream-manager="mainStreamManager" />
+              <user-video
+                class="videog4"
+                v-for="(sub, index) in subscribers.slice(1, 3)"
+                :key="index"
+                :stream-manager="sub"
+                @click.native="updateMainVideoStreamManager(sub)"
+              />
+            </template>
+            <!-- 총 5명 -->
+            <template v-else-if="subscribers.length === 4">
+              <user-video class="videog5" :stream-manager="mainStreamManager" />
+              <user-video
+                class="videog5"
+                v-for="(sub, index) in subscribers.slice(1, 4)"
+                :key="index"
+                :stream-manager="sub"
+                @click.native="updateMainVideoStreamManager(sub)"
+              />
+            </template>
+            <!-- 총 6명 -->
+            <template v-else-if="subscribers.length === 5">
+              <user-video class="videog6" :stream-manager="mainStreamManager" />
+              <user-video
+                class="videog6"
+                v-for="(sub, index) in subscribers.slice(1, 5)"
+                :key="index"
+                :stream-manager="sub"
+                @click.native="updateMainVideoStreamManager(sub)"
+              />
+            </template>
           </div>
         </div>
-        <div class="video-player-2" v-if="subscribers.length > 0">
-          <!-- 총 2명 -->
-          <template v-if="subscribers.length === 1">
-            <user-video class="videog2" :stream-manager="mainStreamManager" />
-          </template>
-          <!-- 총 3명 -->
-          <template v-if="subscribers.length === 2">
-            <user-video class="videog3" :stream-manager="mainStreamManager" />
-            <user-video
-              class="videog3"
-              v-for="(sub, index) in subscribers.slice(1, 2)"
-              :key="index"
-              :stream-manager="sub"
-              @click.native="updateMainVideoStreamManager(sub)"
-            />
-          </template>
-          <!-- 총 4명 -->
-          <template v-else-if="subscribers.length === 3">
-            <user-video class="videog4" :stream-manager="mainStreamManager" />
-            <user-video
-              class="videog4"
-              v-for="(sub, index) in subscribers.slice(1, 3)"
-              :key="index"
-              :stream-manager="sub"
-              @click.native="updateMainVideoStreamManager(sub)"
-            />
-          </template>
-          <!-- 총 5명 -->
-          <template v-else-if="subscribers.length === 4">
-            <user-video class="videog5" :stream-manager="mainStreamManager" />
-            <user-video
-              class="videog5"
-              v-for="(sub, index) in subscribers.slice(1, 4)"
-              :key="index"
-              :stream-manager="sub"
-              @click.native="updateMainVideoStreamManager(sub)"
-            />
-          </template>
-          <!-- 총 6명 -->
-          <template v-else-if="subscribers.length === 5">
-            <user-video class="videog6" :stream-manager="mainStreamManager" />
-            <user-video
-              class="videog6"
-              v-for="(sub, index) in subscribers.slice(1, 5)"
-              :key="index"
-              :stream-manager="sub"
-              @click.native="updateMainVideoStreamManager(sub)"
-            />
-          </template>
+        <div>
+          <StudyRateView
+            :sec="sec"
+            :remainTime="remainTime"
+            :categoryName="categoryName"
+            :gakOrder="gakOrder"
+            @leave-study-room="leaveStudyRoom"
+            @toggle-question="toggleQuestion"
+          />
+          <QnAListView v-if="showQuestion" />
         </div>
       </div>
     </div>
   </div>
-  <!-- <div class="black" v-if="isPause">
-    <p class="resttitle">휴식중</p>
-    <p class="resttime">~00:30</p>
-    <img
-      class="play"
-      @click="togglePause"
-      src="@/assets/img/studyroom/whiteplay.png"
-      alt="다시시작"
-    />
-  </div> -->
 </template>
 
 <script setup>
@@ -114,6 +121,15 @@ import { useDagakStore } from '@/stores/dagak'
 import QnAListView from '@/components/room/QnAListView.vue'
 
 axios.defaults.headers.post['Content-Type'] = 'application/json'
+
+// function mapSubject(subject) {
+//   const subjectMap = {
+//     국어: 'korean',
+//     수학: 'math',
+//     영어: 'english'
+//   }
+//   return subjectMap[subject] || 'Unknown'
+// }
 
 const dagakStore = useDagakStore()
 
@@ -131,6 +147,7 @@ const publisher = ref(undefined)
 const subscribers = ref([])
 const question = ref('')
 const leave = ref('refresh')
+const showQuestion = ref(false)
 // const achievementRate = ref(0)
 
 const change = ref(false)
@@ -143,45 +160,137 @@ const gakId = ref(0)
 const categoryId = ref(0)
 const calendarId = ref(0)
 const gakOrder = ref(0)
+const memoryTime = ref(0)
 
 // setInterval(() => sec.value +=1, 1000)
 // setInterval(() => remainTime.value -=1, 1000)
 
+const modifyMemoryTimeAndLeave = async function () {
+  const body = {
+    sign: 'modifyMemoryTime',
+    gakId: String(gakId.value),
+    memoryTime: sec.value - memoryTime.value,
+    categoryId: String(categoryId.value),
+    calendarId: String(calendarId.value)
+  }
+  await axios
+    .post(`${import.meta.env.VITE_API_BASE_URL}dagak`, body, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then((res) => {
+      if (res.data.code === 1000) {
+        //성공
+        //나갑니다
+      } else {
+        alert('저런,,,')
+      }
+    })
+}
+
+const modifyMemoryTime = async function (subject) {
+  const body = {
+    sign: 'modifyMemoryTime',
+    gakId: String(gakId.value),
+    memoryTime: sec.value - memoryTime.value,
+    categoryId: String(categoryId.value),
+    calendarId: String(calendarId.value)
+  }
+  await axios
+    .post(`${import.meta.env.VITE_API_BASE_URL}dagak`, body, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then((res) => {
+      if (res.data.code === 1000) {
+        //성공
+
+        store.loginUserInfo.sub = subject
+        leaveSession().then(() => {
+          change.value = true
+          joinSession()
+        })
+      } else {
+        alert('저런,,,')
+      }
+    })
+  // 순공 시간 업데이트
+  await axios
+    .get(`${import.meta.env.VITE_API_BASE_URL}/dagak/enterRoomGetGakToStudy`)
+    .then((res) => {
+      const result = res.data.result
+      // result : gakId, totalTime, calendarId, memoryTime, categoryId, userId, categoryName, gakOrder
+      // 그에 따른 categoryId로 방 이동 바랍니다.
+      categoryId.value = result.categoryId
+      calendarId.value = result.calendarId
+      gakId.value = result.gakId
+      userId.value = result.userId
+      gakOrder.value = result.gakOrder + 1
+      memoryTime.value = result.memoryTime
+      store.loginUserInfo.sub = result.categoryName
+      alert(result.categoryName + '방에 입장합니다.')
+      categoryName.value = result.categoryName
+      const achievementRate = result.memoryTime / result.totalTime
+      remainTime.value = result.requiredStudyTime
+
+      store.achievementRate = Math.floor(achievementRate * 100)
+      sec.value = result.memoryTime // 공부했던 시간.
+    })
+  startCount()
+}
+
+const togglePause = () => {
+  isPause.value = !isPause.value
+}
+
+const toggleQuestion = () => {
+  showQuestion.value = !showQuestion.value
+}
+
+let countDownInterval
+let countUpInterval
+
 const startCount = () => {
-  const countUpInterval = setInterval(() => {
+  countUpInterval = setInterval(() => {
     // 공부한 시간 증가
     sec.value++
   }, 1000)
 
-  const countDownInterval = setInterval(() => {
+  countDownInterval = setInterval(() => {
     remainTime.value--
     if (remainTime.value <= 0) {
       clearInterval(countDownInterval)
       clearInterval(countUpInterval)
       // 다음 과목이 있는지 없는지에 따라, 나가거나, 방에 남아있거나, 방 이동 바랍니다.
-
-      const continueCount = confirm(
-        categoryName.value +
-          '공부가 끝났습니다.\n[' +
-          dagakStore.categoryNameToStudy.value[gakOrder.value + 1] +
-          ']방으로 이동 하시겠습니까?'
-      )
-      if (!continueCount) {
-        CountAfterComplete()
+      if (gakOrder.value == Object.keys(dagakStore.categoryNameToStudy.value).length) {
+        const continueCount = confirm('\n마지막 공부가 끝났습니다.\n 계속 공부하시겠습니까?')
+        if (continueCount) {
+          // 방 이동 안 함
+          CountAfterComplete()
+          remainTime.value = 0
+        } else {
+          // 퇴장함.
+          leaveStudyRoom()
+        }
       } else {
-        // leave.value = "leave";
-        // leaveSession();
-
-        // db에 공부한 시간 저장해야함.
-        // 다음각을 불러와서
-        // 다음각을
-
-        //dagakStore.categoryNameToStudy.value[gakOrder.value+1]
-        store.loginUserInfo.sub = 'Korean'
-        leaveSession().then(() => {
-          change.value = true
-          joinSession()
-        })
+        const continueCount = confirm(
+          categoryName.value +
+            '공부가 끝났습니다.\n[' +
+            dagakStore.categoryNameToStudy.value[gakOrder.value].replace(/["']/g, '') +
+            ']방으로 이동 하시겠습니까?'
+        )
+        if (!continueCount) {
+          // 방 이동 안 함
+          CountAfterComplete()
+          remainTime.value = 0
+        } else {
+          // 방 이동 함
+          modifyMemoryTime(
+            dagakStore.categoryNameToStudy.value[gakOrder.value].replace(/["']/g, '')
+          )
+        }
       }
     }
   }, 1000)
@@ -206,24 +315,43 @@ onBeforeMount(async () => {
       gakId.value = result.gakId
       userId.value = result.userId
       gakOrder.value = result.gakOrder
+      memoryTime.value = result.memoryTime
+      store.loginUserInfo.sub = result.categoryName
 
       alert(result.categoryName + '방에 입장합니다.')
       categoryName.value = result.categoryName
       const achievementRate = result.memoryTime / result.totalTime
-      if (achievementRate >= 1) {
-        achievementRate.value = 1
-      } else {
-        // remainTime.value = (result.totalTime - result.memoryTime);
-        remainTime.value = result.requiredStudyTime
-      }
+      remainTime.value = result.requiredStudyTime
+
       store.achievementRate = Math.floor(achievementRate * 100)
       sec.value = result.memoryTime // 공부했던 시간.
     })
 
   // TODO : redis에 저장된 질문/ 답변을 불러와서, QnAListView에 뿌려주기
-  // await axios.get(`${import.meta.env.VITE_API_BASE_URL}/dagak/getQuestionList`).then((res) => {{
-
-  // }
+  console.log('studyRoom onBeforeMount!!!!!!!!!!!!!!!!!!')
+  const body = {
+    sign: 'getSessionQnA'
+  }
+  await axios
+    .post(`${import.meta.env.VITE_API_BASE_URL}room`, body)
+    .then((res) => {
+      {
+        alert('session 질문(redis) 가져오기 : ', res.data.result.questionVOList)
+        // console.log('session 질문(redis) 가져오기 : ', res.data.result.questionVOList)
+        const subQuestions = res.data.result.questionVOList
+        if (subQuestions) {
+          subQuestions.forEach(async (element) => {
+            alert('data : ' + element)
+            await questionStore.setQuestion(element)
+          })
+          console.log('question 제발 : ' + question.value)
+        }
+      }
+    })
+    .catch((e) => {
+      alert(e)
+      console.log('session 질문(redis) 가져오기 실패!!!!!!!!!!! ')
+    })
 })
 
 // 플래그
@@ -314,6 +442,7 @@ const joinSession = () => {
 
   session.value.on('signal:question', (stream) => {
     alert('질문이 들어왔습니다!')
+
     console.log('질문 내용:' + stream.data)
 
     const data = JSON.parse(stream.data)
@@ -394,6 +523,26 @@ const leaveStudyRoom = async () => {
   alert('나가기 버튼을 눌렀습니다.')
   leave.value = 'leave'
   await leaveSession()
+  const body = {
+    sign: 'modifyMemoryTime',
+    gakId: String(gakId.value),
+    memoryTime: sec.value - memoryTime.value,
+    categoryId: String(categoryId.value),
+    calendarId: String(calendarId.value)
+  }
+  await axios
+    .post(`${import.meta.env.VITE_API_BASE_URL}dagak`, body, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then((res) => {
+      if (res.data.code === 1000) {
+        alert('순공 시간 저장 성공!!')
+      } else {
+        alert('저런,,,')
+      }
+    })
   router.push('/')
 }
 
@@ -432,40 +581,23 @@ const updateMainVideoStreamManager = (stream) => {
   mainStreamManager.value = stream
 }
 
-const video1 = ref(null)
-const video2 = ref(null)
-const video3 = ref(null)
-const video4 = ref(null)
-const video5 = ref(null)
-const video6 = ref(null)
-const video7 = ref(null)
-const video8 = ref(null)
-const video9 = ref(null)
-const video10 = ref(null)
-const video11 = ref(null)
-const video12 = ref(null)
 const video13 = ref(null)
 
 const showRate = ref(true)
-const showQuestion = ref(true)
 const isPause = ref(false)
 
 const toggleRate = () => {
   showRate.value = !showRate.value
 }
 
-const toggleQuestion = () => {
-  showQuestion.value = !showQuestion.value
-}
+// const toggleQuestion = () => {
+//   showQuestion.value = !showQuestion.value
+// }
 
 const toggleMute = (video) => {
   if (video && video.value instanceof HTMLVideoElement) {
     video.value.muted = !video.value.muted
   }
-}
-
-const togglePause = () => {
-  isPause.value = !isPause.value
 }
 
 onMounted(() => {
@@ -477,24 +609,21 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   alert('스터디룸에서 다른 페이지로 라우팅!')
+  clearInterval(countUpInterval)
+  clearInterval(countDownInterval)
   leaveSession()
 })
+
 console.log('구독자들: ', subscribers.length)
 console.log('구독자들: ', subscribers.value.length)
 </script>
 
-<style>
+<style lang="scss" scoped>
 .room {
   flex-direction: column;
   height: 60%;
-}
-
-.resttitle {
-  font-size: 100px;
-}
-
-.resttime {
-  font-size: 50px;
+  width: 70%;
+  height: 100%;
 }
 
 .black {
@@ -510,20 +639,16 @@ console.log('구독자들: ', subscribers.value.length)
 }
 
 .studyroomheader {
-  background-color: gainsboro;
   color: black;
   justify-content: space-around;
   height: 100px;
-  /* border: 2px black dashed; */
-  /* width: 62.5%; */
   position: relative;
-  top: 100px;
+  top: 80px;
 }
 
 .nowname {
   font-size: 40px;
   text-align: left;
-  /* background-color: white; */
   display: flex;
 }
 
@@ -548,36 +673,23 @@ console.log('구독자들: ', subscribers.value.length)
   display: flex;
 }
 
-.play {
-  width: 40px;
-  height: 40px;
-  cursor: pointer;
-}
-
 .containers {
   width: 100%;
+  height: 100%;
   display: flex;
-  margin-top: 60px;
+  margin-top: 100px;
 }
 
 .video-players {
   display: flex;
-  height: 50%;
   flex-wrap: wrap;
   box-sizing: border-box;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border: black solid 2px;
 }
 
-.bar {
-  flex: 3;
-  position: relative;
-  /* background-color: black; */
-  width: 100%;
-  display: flex;
-  flex-direction: row;
-  transform-origin: left top;
-  transform: rotate(90deg);
-  /* 90도 회전 */
+.video-player-1 {
+  flex: 4;
 }
 
 .video-player-2 {
@@ -585,103 +697,46 @@ console.log('구독자들: ', subscribers.value.length)
   background-color: white;
   display: flex;
   flex-wrap: wrap;
-  /* 요소들이 한 줄을 넘어갈 경우 다음 줄로 넘어갈 수 있도록 설정 */
-  flex-direction: column;
 }
-
-.video-player-3 {
-  flex: 4;
-}
-
 .videog2 {
   width: 100%;
   border: 5px white solid;
   box-sizing: border-box;
   flex-grow: 1;
 }
+
 .videog3 {
   width: 50%;
   border: 5px white solid;
   box-sizing: border-box;
 }
+
 .videog4 {
   width: 50%;
   border: 5px white solid;
   box-sizing: border-box;
+  flex-direction: row;
 }
+
 .videog5 {
   width: 50%;
   border: 5px white solid;
   box-sizing: border-box;
 }
+
 .videog6 {
   height: calc(100% / 5);
   border: 5px white solid;
   box-sizing: border-box;
   flex-direction: column;
 }
+
 .bigvideo {
   width: 100%;
   display: flex;
   border: 5px white solid;
   box-sizing: border-box;
   object-fit: cover;
-}
-
-.rate {
-  padding: 2px;
-  border: 2px solid black;
-  background-color: white;
-  width: 320px;
-  height: 100%;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  /* 그림자 효과 추가 */
-}
-
-.QnA {
-  position: fixed;
-  right: 0;
-  bottom: 0%;
-}
-
-.achievement {
-  position: fixed;
-  right: 0;
-  bottom: 5%;
-  height: 60%;
-  justify-content: center;
-  display: flex;
-}
-
-.titletag {
-  margin: 0;
-}
-
-.dagak {
-  text-align: center;
-  /* padding: 20px; */
-  position: relative;
-  z-index: 1;
-}
-
-.dagak img {
-  width: 60%;
-  height: auto;
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: -1;
-}
-
-.studytime {
-  font-size: 30px;
-  text-align: center;
-  font-weight: 700;
-}
-
-.ratedetail {
-  font-size: 15px;
-  text-align: center;
 }
 
 .mute {
@@ -699,40 +754,19 @@ console.log('구독자들: ', subscribers.value.length)
   margin-left: 20px;
 }
 
-.questiontoggle {
-  background-color: rgb(200, 200, 200);
-  width: 120px;
-  height: 40px;
-  border: gainsboro;
-  border-radius: 15px 15px 0 0;
-  transition: background-color 0.3s ease;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  position: relative;
-  z-index: 10;
-  top: -40px;
+.div2 {
+  box-shadow:   -7px 0 0 0 black,
+                 2px 0 0 0 black,
+                 0 -7px 0 0 black,
+                 0 2px 0 0 black;
 }
 
-.ratetoggle {
-  background-color: gainsboro;
-  width: 120px;
-  height: 40px;
-  border: gainsboro;
-  border-radius: 15px 15px 0 0;
-  transition: background-color 0.3s ease;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  top: -40px;
-  position: relative;
+.div3 {
+  // margin: 0.5em auto;
+  box-shadow:   -4px 0 0 0 black,
+                 4px 0 0 0 black,
+                 0 -4px 0 0 black,
+                 0 4px 0 0 black;
 }
 
-.questiontoggle:hover,
-.ratetoggle:hover {
-  background-color: white;
-  /* border-bottom: 2px solid white;*/
-}
-
-.btn {
-  border: black solid 1px;
-  border-radius: 5px;
-  padding: 2px;
-}
 </style>

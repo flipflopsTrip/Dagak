@@ -1,13 +1,16 @@
 <template>
   <div class="mypage-profile">
     <div>
-      <img src="@/assets/img/기본프로필_갈색.jpg" />
+      <img v-if="userStore.loginUserInfo.userPicture" 
+    :src="profileImage + '?v=' + new Date().getTime()"
+    style="width: 70%;padding-bottom: 10%;"/>
+        <img v-else src="@/assets/img/default.jpg" />
       <div>{{ userStore.loginUserInfo.userId }}</div>
       <div>{{ userStore.loginUserInfo.userEmail }}</div>
     </div>
     <div>
       <span v-if="userTotalStudyTime != null">
-        {{ userTotalStudyTime }}분 |
+        {{ formatTime(userTotalStudyTime) }} |
       </span>
       <span v-else>&nbsp;- 분 | </span>
 
@@ -55,17 +58,33 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed} from 'vue';
 import axios from 'axios';
 import { useUserStore } from '@/stores/user';
-
+const profileImage = ref("");
 const userStore = useUserStore();
 const userStatusMessage = ref('');
 const userTotalStudyTime = ref('');
+const formatTime = (seconds) => {
+  if (isNaN(seconds) || seconds < 0) {
+    return "Invalid input";
+  }
+
+  const hours = Math.floor(seconds / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  const formattedHours = String(hours).padStart(2, '0');
+  const formattedMinutes = String(minutes).padStart(2, '0');
+
+  return `${formattedHours}시간 ${formattedMinutes}분`;
+};
 
 onMounted(() => {
   getUserProfileInfo();
+  if (userStore.loginUserInfo.userId != null) {
+    profileImage.value = userStore.loginUserInfo.userPicture;
+  }
 });
+
 
 const getUserProfileInfo = function () {
   const body = {
@@ -78,10 +97,10 @@ const getUserProfileInfo = function () {
         'Content-Type': 'application/json',
       },
     })
-    .then((res) => res.data)
-    .then((json) => {
-      userStatusMessage.value = json.result.userStatusMessage;
-      userTotalStudyTime.value = json.result.userTotalStudyTime;
+    .then((res) =>{
+      console.log("getUserProfileInfo: "+res.data.result);
+      userStatusMessage.value = res.data.result.userStatusMessage;
+      userTotalStudyTime.value = res.data.result.userTotalStudyTime;
     });
 };
 

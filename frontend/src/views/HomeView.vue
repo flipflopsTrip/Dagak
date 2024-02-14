@@ -12,55 +12,24 @@
           style="color: white;"
           v-if="userStore.loginUserInfo.userId == null"
           @click="navigateToLogin"
->
-          <div class="is-typed">
-            <h3 style="display:inline-block;"> 
-              <VueWriter :array="arr" style="display:inline-block;" :caret="underscore" />
-            </h3>
-        <p style="display: inline-block;" class="font-weight-bold"><h3> 공부하기</h3></p>
-        </div>
+        >
       </div>
-
-
-      <!-- <div
-        style="color: white;"
-        v-else-if="userStore.loginUserInfo.userId != null && arr.length ===0"
-        @click="navigateToMyPageSchedule">
-
-        <div class="is-typed">
-          <h3 style="display:inline-block;"> </h3>
-          <p style="display: inline-block;" class="font-weight-bold"><h3> 다각 만들러가기</h3></p>
-        </div>
-
-        <div style="display: inline-block;">
-          <div class="pixel"><p>하이</p></div>
-        </div>
-      </div> -->
-
 
 
       <div
         style="color: white;"
-        v-else-if="userStore.loginUserInfo.userId != null && arr.length ===0"
+        v-if="userStore.loginUserInfo.userId != null && arr.length ===0"
         >
         <div class="is-typed" style="" @click="navigateToMyPageSchedule">
           <h3 style=""> </h3>
           <p style="" class="font-weight-bold"><h3> 다각 만들러가기</h3></p>
         </div>
-        
-        <div class="friends">
-          <div class="bubble medium bottom" style="margin-left : 80%;">
-              친구 <b style="color: red;">{{ loginFriends.length }}</b> 명이 <br/> 로그인중이에요
-              <br/>
-          </div>
-            <img  src="@/assets/friends.png" @click="showFriends" style="width : 13%; margin-left : 80%; margin-bottom : 10%"/>        
-        </div>
       </div>
-        <div
+      <div
           style="color: white;"
           v-else
           @click="navigateToStudyRoom"
->
+          >
           <div class="is-typed">
             <h3 style="display:inline-block;"> 
               <VueWriter :array="arr" style="display:inline-block;" :caret="underscore" />
@@ -68,12 +37,12 @@
         <p style="display: inline-block;" class="font-weight-bold"><h3> 공부하기</h3></p>
         </div>
       </div>
-        <div class="friends" v-if="userStore.loginUserInfo.userId">
-          <div class="bubble medium bottom" style="margin-left : 80%;">
-              친구 <b style="color: red;">{{ userStore.friends.length }}</b> 명이 <br/> 로그인중이에요
-              <br/>
-          </div>
-            <img  src="@/assets/friends.png" @click="showFriends" style="width : 13%; margin-left : 80%; margin-bottom : 10%"/>        
+        <div v-if="userStore.loginUserInfo.userId" class="friends">
+            <div class="bubble medium bottom" style="margin-left : 80%;">
+                친구 <b style="color: red;">{{ loginFriends.length }}</b> 명이 <br/> 로그인중이에요
+                <br/>
+            </div>
+              <img  src="@/assets/friends.png" @click="showFriends" style="width : 13%; margin-left : 80%; margin-bottom : 10%"/>        
         </div>
       </div>
       </div>
@@ -87,8 +56,11 @@
       </div>
       </div>
         <div class="background">
-      <div class="part three">
-        3
+          <div class="part2">
+          <img src="@/assets/computer.png" class="board">
+          <div class="two"> 
+            <StudyRoomRanking style="z-index : 1" />
+          </div>
       </div>
         </div>
     </div>
@@ -99,6 +71,7 @@ import { computed, onMounted, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import MyRanking from '@/components/home/MyRanking.vue';
 import MokkojiRanking from '@/components/home/MokkojiRanking.vue';
+import StudyRoomRanking from '@/components/home/StudyRoomRanking.vue';
 import { useUserStore } from '@/stores/user';
 import { useCategoryStore } from '@/stores/category';
 import { useAlarmStore } from '@/stores/alarm';
@@ -189,7 +162,7 @@ watch(() => userStore.loginUserInfo.userId, (newUserId) => {
   position: relative;
   z-index: 30;
   color: black;
-  padding-top: 10%;
+  padding-top: 17%;
   padding-bottom: 0;
 }
 

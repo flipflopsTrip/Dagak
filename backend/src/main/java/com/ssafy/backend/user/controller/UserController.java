@@ -84,6 +84,8 @@ public class UserController {
 
     @Autowired
     SecurityMapper securityMapper;
+    @Autowired
+    UserRankService userRankService;
 
     @Transactional(rollbackFor = Exception.class)
     @PostMapping("test")
@@ -136,7 +138,6 @@ public class UserController {
                     if (session != null) {
                         String isBot = (String) session.getAttribute("recaptcha");
                         if ("ok".equals(isBot)) {
-
                             String loginUserId = (String) body.get("userId");
                             String loginUserPassword = (String) body.get("userPassword");
                             String loginUserIp = request.getRemoteAddr();
@@ -614,7 +615,10 @@ public class UserController {
             session.setAttribute("recaptcha", "ok");
             System.out.println(isNotBot);
         }
-
+    }
+    @GetMapping("/rank10")
+    public BaseResponse<?> getUserRank(){
+        return new BaseResponse<>(userRankService.getUserRanks());
     }
 
 

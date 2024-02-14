@@ -77,7 +77,7 @@ public class BoardController {
                 boardService.addBoard(addRequestDTO, userId);
                 return new BaseResponse<>(SUCCESS);
             case "deletePost":
-                long boardId = (long) body.get("boardId");
+                long boardId = Long.valueOf((int) body.get("boardId"));
                 BoardDeleteRequestDTO dto = BoardDeleteRequestDTO
                         .builder()
                         .boardId(boardId).build();
@@ -87,12 +87,13 @@ public class BoardController {
                 boardTitle = (String) body.get("boardTitle");
                 boardContent = (String) body.get("boardContent");
                 tagId =(int) body.get("tagId");
-                boardId = (long) body.get("boardId");
+                boardId = Long.valueOf((int) body.get("boardId"));
                 //tagId가 숫자일때
                 BoardModifyRequestDTO modifyRequestDTO = BoardModifyRequestDTO.builder()
                         .boardId((boardId))
                         .boardTitle(boardTitle)
                         .boardContent(boardContent)
+                        .tagId(tagId)
                         .build();
                 boardService.modifyBoard(modifyRequestDTO, userId);
                 return new BaseResponse<>(SUCCESS);
@@ -113,7 +114,7 @@ public class BoardController {
         switch (sign){
             case "addComment":
                 String comment = (String) body.get("comment");
-                long boardId =(long) body.get("boardId");
+                long boardId =Long.valueOf((int) body.get("boardId"));
                 //boardId 가 숫자 일 때
                 //request dto
                 CommentCreateRequestDTO requestDTO = CommentCreateRequestDTO.builder()
@@ -128,9 +129,9 @@ public class BoardController {
                         .comment(comment).build();
                 return new BaseResponse<>(commentVO);
             case "modifyComment":
-                commentId = (long) body.get("commentId");
+                commentId = Long.valueOf((int) body.get("commentId"));
                 comment = (String) body.get("comment");
-                boardId =(long) body.get("boardId");
+                boardId =Long.valueOf((int) body.get("boardId"));
 
                 //request dto
                 CommentModifyRequestDTO dto = CommentModifyRequestDTO.builder()
@@ -147,8 +148,8 @@ public class BoardController {
                         .build();
                 return new BaseResponse(commentVO);
             case "deleteComment":
-                commentId = (long) body.get("commentId");
-                boardId =(long) body.get("boardId");
+                commentId = Long.valueOf((int) body.get("commentId"));
+                boardId = Long.valueOf((int) body.get("boardId"));
                 CommentDeleteRequestDTO commentDeleteRequestDTO= CommentDeleteRequestDTO.builder()
                         .boardId(boardId)
                         .commentId(commentId)
