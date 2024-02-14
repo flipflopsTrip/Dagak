@@ -38,7 +38,7 @@
               :title="item.productDescription"
             >
               <img
-                :src="`/src/assets/img/store/${item.productImage}.png`"
+                :src="`/public/img/store/${item.productImage}.png`"
                 class="market-items-detail-img"
               />
               <div
