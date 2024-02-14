@@ -20,7 +20,7 @@ import { ref, onMounted } from 'vue'
 import axios from 'axios';
 const studyRoomRanking = ref([]);
 const APPLICATION_SERVER_URL =
-  process.env.NODE_ENV === 'production' ? '' : 'https://localhost:8080/dagak/'
+  process.env.NODE_ENV === 'production' ? '' : `${import.meta.env.VITE_API_BASE_URL}`
 
 const getStudyRoomRanking = async () => {
   console.log("call getStudyRoomRanking")
