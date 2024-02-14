@@ -18,6 +18,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(value = JsonProcessingException.class)
     public BaseResponse<BaseResponseStatus> baseException(JsonProcessingException exception) {
         log.warn("Handle JsonProcessingException : {}", exception.getCause());
+        exception.printStackTrace();
         return new BaseResponse<>(BaseResponseStatus.JSON_PROCESSING_ERROR);
     }
 
@@ -45,6 +46,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(Exception.class)
     protected BaseResponse<BaseResponseStatus> handleException(AmazonS3Exception e) {
         log.error("AmazonS3Exception", e);
+        e.printStackTrace();
         return new BaseResponse<>(BaseResponseStatus.OOPS);
     }
 }

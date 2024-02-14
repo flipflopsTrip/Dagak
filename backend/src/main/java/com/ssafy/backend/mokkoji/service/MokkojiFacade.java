@@ -164,10 +164,10 @@ public class MokkojiFacade {
         Mokkoji mokkoji = mokkojiService.getMokkojiById(dto.getMokkojiId());
         ReqestAlarmDTO alarmDto = ReqestAlarmDTO.builder()
                 .tagId(2)
-                .userId(user.getUserId())
-                .requestedUserId(mokkoji.getLeaderId())
+                .userId(mokkoji.getLeaderId())
+                .requestedUserId(user.getUserId())
                 .build();
-        alarmService.aVoidDuplicateAlaram(alarmDto);
+        alarmService.aVoidDuplicateAlaram(alarmDto,0);
         alarmService.requestAlarm(alarmDto);
     }
 

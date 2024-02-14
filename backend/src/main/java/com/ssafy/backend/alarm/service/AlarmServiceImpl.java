@@ -1,10 +1,15 @@
 package com.ssafy.backend.alarm.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssafy.backend.alarm.model.domain.Alarm;
 import com.ssafy.backend.alarm.model.dto.CheckAlarmDTO;
 import com.ssafy.backend.alarm.model.dto.ReqestAlarmDTO;
 import com.ssafy.backend.alarm.model.repository.AlarmRepository;
 import com.ssafy.backend.common.exception.BaseException;
+import com.ssafy.backend.common.utils.RequestMessage;
+import com.ssafy.backend.user.model.dto.OpenviduRequestDTO;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +25,11 @@ public class AlarmServiceImpl implements  AlarmService {
     @Autowired
     AlarmRepository alarmRepository;
 
+    @Autowired
+    RequestMessage requestMessage;
+    @Autowired
+    ObjectMapper objectMapper;
+
     @Override
     public Integer findAlarmId(String userId, String requestedUserId, int tagId) {
         return alarmRepository.findAlarmByUserIdAndRequestedUserIdAndTagId(userId, requestedUserId, tagId).orElseThrow(
@@ -27,15 +37,23 @@ public class AlarmServiceImpl implements  AlarmService {
         ).getAlarmId();
     }
 
+    @SneakyThrows(JsonProcessingException.class)
     @Override
     public void requestAlarm(ReqestAlarmDTO reqestAlarmDto) {
-        alarmRepository.save(
-                Alarm.builder()
-                        .tagId(reqestAlarmDto.getTagId())
-                        .userId(reqestAlarmDto.getUserId())
-                        .isChecked(0)
-                        .requestedUserId(reqestAlarmDto.getRequestedUserId())
-                        .build());
+        Alarm alarm = Alarm.builder()
+                .tagId(reqestAlarmDto.getTagId())
+                .userId(reqestAlarmDto.getUserId())
+                .isChecked(0)
+                .requestedUserId(reqestAlarmDto.getRequestedUserId())
+                .build();
+        alarmRepository.save(alarm);
+
+            requestMessage.RequestOpenviduMessage(
+                    OpenviduRequestDTO.builder()
+                            .session(reqestAlarmDto.getUserId())
+                            .type("alarm")
+                            .data(objectMapper.writeValueAsString(alarm))
+                            .build());
     }
     @Override
     public void checkAlarm(CheckAlarmDTO checkAlarmDto) {
@@ -64,11 +82,11 @@ public class AlarmServiceImpl implements  AlarmService {
     }
 
     @Override
-    public void aVoidDuplicateAlaram(ReqestAlarmDTO reqestAlarmDto) {
-        alarmRepository.findAlarmByUserIdAndRequestedUserIdAndTagId(
+    public void aVoidDuplicateAlaram(ReqestAlarmDTO reqestAlarmDto,int checked) {
+        alarmRepository.findOptionalAlarmByUserIdAndRequestedUserIdAndTagIdAndIsChecked(
                 reqestAlarmDto.getUserId(),
                 reqestAlarmDto.getRequestedUserId(),
-                reqestAlarmDto.getTagId()).ifPresent(
+                reqestAlarmDto.getTagId(), checked).ifPresent(
                         e -> {
                             throw new BaseException(AVOID_DUPLICATE_ALARM);
                         });
@@ -77,10 +95,11 @@ public class AlarmServiceImpl implements  AlarmService {
     @Override
     public void deleteAlarm(ReqestAlarmDTO alarmDto) {
         System.out.println(alarmDto);
-        Alarm alarm = alarmRepository.findAlarmByUserIdAndRequestedUserIdAndTagId(
+        Alarm alarm = alarmRepository.findOptionalAlarmByUserIdAndRequestedUserIdAndTagIdAndIsChecked(
                 alarmDto.getUserId(),
                 alarmDto.getRequestedUserId(),
-                alarmDto.getTagId()
+                alarmDto.getTagId(),
+                0
         ).orElseThrow(() -> new BaseException(ALREADY_DELETE_ALARM));
         alarmRepository.delete(alarm);
 

@@ -32,10 +32,11 @@ const alarmStore = useAlarmStore();
     top: -22px;
     left: 0px;
     font-size: 1.4rem;
+    color: white;
   }
 
   .bg-danger {
-    background-color: tomato !important;
+    background-color: $color-light-5 !important;
   }
 }
 </style>

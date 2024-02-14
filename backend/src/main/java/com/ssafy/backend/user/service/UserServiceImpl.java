@@ -10,23 +10,23 @@ import com.ssafy.backend.security.model.dto.SecurityDTO;
 import com.ssafy.backend.security.model.mapper.SecurityMapper;
 import com.ssafy.backend.user.model.domain.User;
 import com.ssafy.backend.user.model.domain.UserRank;
+import com.ssafy.backend.user.model.domain.redis.LoginRedis;
 import com.ssafy.backend.user.model.dto.UserLoginDTO;
 import com.ssafy.backend.user.model.dto.UserSignupDTO;
 import com.ssafy.backend.user.model.mapper.UserMapper;
 import com.ssafy.backend.user.model.repository.UserRankRepository;
 import com.ssafy.backend.user.model.repository.UserRepository;
+import com.ssafy.backend.user.model.repository.redis.LoginRedisRepository;
 import com.ssafy.backend.user.model.vo.MyPageVO;
 import com.ssafy.backend.user.model.vo.UserInformationVO;
 import com.ssafy.backend.user.model.vo.UserViewVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
 
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
@@ -60,6 +60,9 @@ public class UserServiceImpl implements UserService {
     UserRankRepository userRankRepository;
 
     @Autowired
+    LoginRedisRepository loginRedisRepository;
+
+    @Autowired
     private JavaMailSender javaMailSender;
 
     @Autowired
@@ -68,7 +71,7 @@ public class UserServiceImpl implements UserService {
     @Value("${spring.mail.username}")
     private String senderEmail;
 
-    @Transactional(rollbackFor = {SQLException.class, Exception.class, BaseException.class, RuntimeException.class} ,propagation = Propagation.REQUIRES_NEW)
+    @Transactional(rollbackFor = {Exception.class} ,propagation = Propagation.REQUIRES_NEW)
     @Override
     public void signUp(UserSignupDTO userSignupDTO) throws Exception {
         SecurityDTO securityDTO = new SecurityDTO();
@@ -100,10 +103,17 @@ public class UserServiceImpl implements UserService {
         if (user == null) {
             return false;
         } else {
+            // 로그인후에 Redis 저장하기
+            LoginRedis loginRedis = loginRedisRepository.findByUserId(loginUserId);
+            if(loginRedis == null){ // 로그인한 정보가 없다면
+                loginRedis = new LoginRedis(loginUserId,true);
+            } else{ // 로그인 정보가 남아있다면
+                loginRedis.setLogin(true);
+            }
+            loginRedisRepository.save(loginRedis);
+
             return user.checkPassword(encryptedLoginPassword);
         }
-
-
     }
 
     @Override
@@ -123,7 +133,6 @@ public class UserServiceImpl implements UserService {
         log.info("모꼬지가 있는지 확인합니다. mokkojiId : {}",user.getMokkojiId());
         // 이미 존재하는 길드, 포인트 부족
         if(user.getMokkojiId() != null ) throw new BaseException(OOPS);
-        if(user.getUserPoint() - point <0) throw new BaseException(OOPS);
         user.usePoint(point);
         return user;
     }
@@ -194,6 +203,7 @@ public class UserServiceImpl implements UserService {
         userInformationVO.setUserNickname(user.getUserNickname());
         userInformationVO.setUserPicture(user.getUserPicture());
         userInformationVO.setUserStatusMessage(user.getUserStatusMessage());
+        userInformationVO.setUserTotalStudyTime(user.getUserTotalStudyTime());
         if (user.getMokkojiId()!=null){  // 모꼬지가 있는 회원일 때
             userInformationVO.setMokkoijiName(user.getMokkojiId().getMokkojiName());
         }
@@ -360,6 +370,15 @@ public class UserServiceImpl implements UserService {
     public void saveProfile(User user,String url) {
         user.changeImage(url);
         userRepository.save(user);
+    }
+
+    @Override
+    public void logout(String userId) {
+        LoginRedis loginRedis = loginRedisRepository.findByUserId(userId);
+        if(loginRedis != null){
+            loginRedis.setLogin(false);
+            loginRedisRepository.save(loginRedis);
+        }
     }
 
     @Override

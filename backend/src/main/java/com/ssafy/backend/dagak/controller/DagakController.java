@@ -6,11 +6,9 @@ import com.ssafy.backend.common.exception.BaseException;
 import com.ssafy.backend.common.response.BaseResponse;
 import com.ssafy.backend.dagak.model.domain.Dagak;
 import com.ssafy.backend.dagak.model.domain.Gak;
-import com.ssafy.backend.dagak.model.dto.DagakDTO;
-import com.ssafy.backend.dagak.model.dto.GakDTO;
-import com.ssafy.backend.dagak.model.dto.AddDagakDateDTO;
-import com.ssafy.backend.dagak.model.dto.UpdateMemoryTimeDTO;
+import com.ssafy.backend.dagak.model.dto.*;
 import com.ssafy.backend.dagak.model.vo.CalendarDagakVO;
+import com.ssafy.backend.dagak.model.vo.TodayGakVO;
 import com.ssafy.backend.dagak.service.DagakFacade;
 import com.ssafy.backend.dagak.service.DagakService;
 import com.ssafy.backend.user.model.domain.User;
@@ -58,6 +56,7 @@ public class DagakController {
 
         switch (sign) {
             case "addDagak":
+                String dagakName = (String)body.get("dagakName");
                 List<Map<String, String>> json = (List<Map<String, String>>) body.get("gaks");
                 List<GakDTO> gaks = new ArrayList<>();
 
@@ -73,7 +72,7 @@ public class DagakController {
                 }
 
                 // 다각 생성
-                DagakDTO dagakDTO = new DagakDTO(userId, totalTime);
+                DagakDTO dagakDTO = new DagakDTO(userId, totalTime, dagakName);
                 dagakFacade.addDagak(dagakDTO, gaks);
 
                 return new BaseResponse<>(SUCCESS);
@@ -90,6 +89,14 @@ public class DagakController {
 
                 return new BaseResponse<>(SUCCESS);
 
+            case "deleteCalendarDagak":
+                String calendarDagakId = (String) body.get("calendarDagakId");
+                DeleteCalendarDagakDTO deleteCalendarDagakDTO = new DeleteCalendarDagakDTO(userId, calendarDagakId);
+
+                dagakService.deleteCalendarDagak(deleteCalendarDagakDTO);
+
+                return new BaseResponse<>(SUCCESS);
+
             /*
              * [POST] 다각 삭제하기
              * 그와 관련된 모든 정보도 삭제됩니다.
@@ -102,12 +109,13 @@ public class DagakController {
                 return new BaseResponse<>(SUCCESS);
 
             case "modifyMemoryTime":
+                System.out.println("아ㅓㄴ뫼ㅏㅈㅁ노ㅓㅏㅣ노미ㅏㅓ노ㅓ미ㅏ외ㅓㅏㅁ오ㅓㄴ망ㄹㅁ니ㅏㅓㄹ멍닐");
                 String gakId = (String) body.get("gakId");
                 Integer memoryTime = (Integer) body.get("memoryTime");
                 String categoryId = (String) body.get("categoryId");
                 String calendarId = (String) body.get("calendarId");
                 UpdateMemoryTimeDTO updateStartTimeDto = new UpdateMemoryTimeDTO(gakId, categoryId, calendarId, memoryTime, userId);
-
+                System.out.println(updateStartTimeDto);
                 dagakService.modifyMemoryTime(updateStartTimeDto);
 
                 return new BaseResponse<>(SUCCESS);
@@ -220,5 +228,16 @@ public class DagakController {
         return new BaseResponse<>(categories);
     }
 
+    @GetMapping("enterRoomGetGakToStudy")
+    public BaseResponse<?> getGakToStudy(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        User user = (User) session.getAttribute("User");
+        if (session == null)
+            return new BaseResponse<>(EMPTY_SESSION);
 
+        String userId = user.getUserId();
+        TodayGakVO todayGakVO = dagakService.enterRoomGetGakToStudy(userId);
+
+        return new BaseResponse<>(todayGakVO);
+    }
 }

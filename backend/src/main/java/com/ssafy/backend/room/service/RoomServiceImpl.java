@@ -4,17 +4,22 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssafy.backend.common.exception.BaseException;
 import com.ssafy.backend.room.model.domain.Answer;
 import com.ssafy.backend.room.model.domain.Question;
+import com.ssafy.backend.room.model.domain.redis.AnswerRedis;
+import com.ssafy.backend.room.model.domain.redis.QuestionRedis;
+import com.ssafy.backend.room.model.domain.redis.StudyRoomRedis;
 import com.ssafy.backend.room.model.dto.AnswerDTO;
-import com.ssafy.backend.room.model.vo.AnswerVO;
-import com.ssafy.backend.room.model.vo.ConnectionVO;
-import com.ssafy.backend.room.model.dto.QuestionDTO;
-import com.ssafy.backend.room.model.dto.EnterRoomDTO;
 import com.ssafy.backend.room.model.repository.AnswerRepository;
 import com.ssafy.backend.room.model.repository.QuestionRepository;
-import com.ssafy.backend.room.model.vo.QuestionVO;
+import com.ssafy.backend.room.model.repository.redis.StudyRoomRedisRepository;
+import com.ssafy.backend.room.model.vo.*;
+import com.ssafy.backend.room.model.dto.QuestionDTO;
+import com.ssafy.backend.room.model.dto.EnterRoomDTO;
+import com.ssafy.backend.room.model.repository.redis.AnswerRedisRepository;
+import com.ssafy.backend.room.model.repository.redis.QuestionRedisRepository;
 import com.ssafy.backend.user.model.dto.OpenviduRequestDTO;
 import io.openvidu.java.client.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
@@ -24,12 +29,10 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.annotation.PostConstruct;
 import java.net.URI;
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.ssafy.backend.common.response.BaseResponseStatus.EMPTY_SIGN;
 import static com.ssafy.backend.common.response.BaseResponseStatus.NOT_EXIST_SESSION;
 
 @Service
@@ -42,8 +45,20 @@ public class RoomServiceImpl implements RoomService {
     @Value("${openvidu.secret}")
     private String OPENVIDU_SECRET;
 
+    @Autowired
+    private final AnswerRedisRepository answerRedisRepository;
+
+    @Autowired
+    private final QuestionRedisRepository questionRedisRepository;
+
+    @Autowired
     private final AnswerRepository answerRepository;
+
+    @Autowired
     private final QuestionRepository questionRepository;
+
+    @Autowired
+    private final StudyRoomRedisRepository studyRoomRedisRepository;
 
     private OpenVidu openvidu;
 
@@ -71,7 +86,18 @@ public class RoomServiceImpl implements RoomService {
         String sessionName = enterRoomDTO.getSessionName();
         Session session;
 
-        if(enterRoomDTO.getPrevConnectionId() == null){
+        // Redis 저장하기
+        StudyRoomRedis studyRoomRedis = studyRoomRedisRepository.findByName(enterRoomDTO.getSessionName());
+        if(studyRoomRedis == null){
+            studyRoomRedis = new StudyRoomRedis(enterRoomDTO.getSessionName(),1);
+            studyRoomRedisRepository.save(studyRoomRedis);
+        }else {
+            int prevCount = studyRoomRedis.getCount();
+            studyRoomRedis.setCount(prevCount+1);
+            studyRoomRedisRepository.save(studyRoomRedis);
+        }
+
+        if(enterRoomDTO.getPrevSession() == null){
             sessionName = getRandomroom(sessionName);
         }  else { // 기존연결이 있다면 재접속
             sessionName = enterRoomDTO.getPrevSession();
@@ -83,14 +109,12 @@ public class RoomServiceImpl implements RoomService {
         if(session == null){    // 방이 존재하지 않다면 생성하라
             System.out.println("========================================");
             System.out.println("존재하지 않는 방에 입장합니다: "+sessionName);
-//            deletePreviousConnection(enterRoomDTO);
             HashMap<String,String> SessionPropertyJson = enterRoomDTO.toSessionPropertyJson();
             SessionProperties properties = SessionProperties.fromJson(SessionPropertyJson).build();
             openvidu.createSession(properties);
         } else{                 // 새로고침할떄 다른 세션에 있는 나의 연결을 삭제한다.
             System.out.println("========================================");
             System.out.println("존재하는 방에 입장합니다: "+sessionName);
-//            deletePreviousConnection(enterRoomDTO);
         }
 
         openvidu.fetch();
@@ -106,6 +130,81 @@ public class RoomServiceImpl implements RoomService {
         ConnectionVO connectionVO = new ConnectionVO(connection.getConnectionId(),sessionName,connection.getToken());
         System.out.println("새로운 연결: "+connectionVO.getConnectionId() +" / " + connectionVO.getSession());
         return connectionVO;
+    }
+
+    @Override
+    public ConnectionVO changeSubject(EnterRoomDTO changeSubjectDTO) throws Exception {
+        String sessionName = changeSubjectDTO.getSessionName();
+        Session session;
+
+        sessionName = getRandomroom(sessionName);
+        changeSubjectDTO.setSessionName(sessionName);
+
+        openvidu.fetch();
+        session = openvidu.getActiveSession(sessionName);
+
+        if(session == null){    // 방이 존재하지 않다면 생성하라
+            System.out.println("========================================");
+            System.out.println("존재하지 않는 방에 입장합니다: "+sessionName);
+            HashMap<String,String> SessionPropertyJson = changeSubjectDTO.toSessionPropertyJson();
+            SessionProperties properties = SessionProperties.fromJson(SessionPropertyJson).build();
+            openvidu.createSession(properties);
+        } else{
+            System.out.println("========================================");
+            System.out.println("존재하는 방에 입장합니다: "+sessionName);
+        }
+
+        openvidu.fetch();
+        session = openvidu.getActiveSession(sessionName);
+
+        ConnectionProperties properties = new ConnectionProperties.Builder().build();
+        Connection connection = session.createConnection(properties);
+        ConnectionVO connectionVO = new ConnectionVO(connection.getConnectionId(),sessionName,connection.getToken());
+        System.out.println("새로운 연결: "+connectionVO.getConnectionId() +" / " + connectionVO.getSession());
+        return connectionVO;
+    }
+
+    @Override
+    public SessionQnAVO getSessionQnA(String studyRoom) {
+        List<AnswerRedis> answerRedisList = answerRedisRepository.findBySession(studyRoom);
+        List<QuestionRedis> questionRedisList = questionRedisRepository.findBySession(studyRoom);
+        List<AnswerVO> answerVOList = answerRedisList.stream()
+                .map(answerRedis -> new AnswerVO(answerRedis.getAnswerId(),answerRedis.getUserId(),answerRedis.getSession(),answerRedis.getAnswerContent(),answerRedis.getQuestionId()))
+                .collect(Collectors.toList());
+        List<QuestionVO> questionVOList = questionRedisList.stream()
+                .map(questionRedis -> new QuestionVO(questionRedis.getQuestionId(),questionRedis.getUserId(),questionRedis.getSession(),questionRedis.getQuestionContent()))
+                .collect(Collectors.toList());
+        SessionQnAVO sessionQnAVO = new SessionQnAVO(answerVOList, questionVOList);
+        return sessionQnAVO;
+    }
+
+    @Override
+    public UserQnAVO getUserQnA(String userId) throws Exception {
+        List<Answer> answerList = answerRepository.findByUserId(userId);
+        List<Question> questionList = questionRepository.findByUserId(userId);
+        List<AnswerVO> answerVOList = answerList.stream()
+                .map(answer -> new AnswerVO(answer.getAnswerId(),answer.getUserId(),answer.getSession(),answer.getAnswerContent(),answer.getQuestionId()))
+                .collect(Collectors.toList());
+        List<QuestionVO> questionVOList = questionList.stream()
+                .map(question -> new QuestionVO(question.getQuestionId(),question.getUserId(),question.getSession(),question.getQuestionContent()))
+                .collect(Collectors.toList());
+        UserQnAVO userQnAVO = new UserQnAVO(answerVOList, questionVOList);
+        return userQnAVO;
+    }
+
+    @Override
+    public List<StudyRoomVO> getSessionRanking() throws Exception {
+        List<StudyRoomVO> studyRoomVOList = new ArrayList<>();
+        studyRoomRedisRepository.findAll().forEach(studyRoomRedis -> {
+                    StudyRoomVO studyRoomVO = new StudyRoomVO(studyRoomRedis.getName(), studyRoomRedis.getCount());
+            studyRoomVOList.add(studyRoomVO);
+                }
+        );
+
+        Collections.sort(studyRoomVOList);
+        System.out.println("studyRoomVOList : "+studyRoomVOList);
+
+        return studyRoomVOList;
     }
 
     @Override
@@ -138,8 +237,8 @@ public class RoomServiceImpl implements RoomService {
         }
 
         // DB에 질문 저장
-        Question question = saveQuestion(questionDTO);
-        QuestionVO questionVO = new QuestionVO(question.getQuestionId(),questionDTO.getUserId(),questionDTO.getSession(),questionDTO.getData());
+        QuestionRedis questionRedis = saveQuestion(questionDTO);
+        QuestionVO questionVO = new QuestionVO(questionRedis.getQuestionId(),questionDTO.getUserId(),questionDTO.getSession(),questionDTO.getData());
 
         ObjectMapper om = new ObjectMapper();
         OpenviduRequestDTO openviduRequestDTO = new OpenviduRequestDTO(sessionId,"question",om.writeValueAsString(questionVO));
@@ -177,9 +276,23 @@ public class RoomServiceImpl implements RoomService {
             throw new BaseException(NOT_EXIST_SESSION);
         }
 
-        Answer answer = saveAnswer(answerDTO);
-        AnswerVO answerVO = new AnswerVO(answer.getAnswerId(),answerDTO.getUserId(),answerDTO.getSession(),answerDTO.getData(),answerDTO.getQuestionId());
+        // Redis에 답변 저장
+        AnswerRedis answerRedis = saveAnswer(answerDTO);
+        System.out.println("AnswerId: "+ answerRedis.getAnswerId());
+        AnswerVO answerVO = new AnswerVO(answerRedis.getAnswerId(),answerDTO.getUserId(),answerDTO.getSession(),answerDTO.getData(),answerDTO.getQuestionId());
         ObjectMapper om = new ObjectMapper();
+
+        // RDB에 질문 저장
+        System.out.println(answerDTO.getQuestionId());
+        QuestionRedis questionRedis = questionRedisRepository.findById(answerDTO.getQuestionId()).orElseThrow(() ->
+            new BaseException(EMPTY_SIGN)
+        );
+        Question question = questionRedis.toEntity();
+        questionRepository.save(question);
+
+        //RDB에 답변 저장;
+        Answer answer = answerRedis.toEntity();
+        answerRepository.save(answer);
 
         OpenviduRequestDTO openviduRequestDTO = new OpenviduRequestDTO(sessionId,"answer",om.writeValueAsString(answerVO));
         URI uri = UriComponentsBuilder
@@ -207,25 +320,24 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public Answer saveAnswer(AnswerDTO answerDTO) throws Exception {
-        Answer answer = answerDTO.toEntity();
-        answer = answerRepository.save(answer);
-        return answer;
+    public AnswerRedis saveAnswer(AnswerDTO answerDTO) throws Exception {
+        AnswerRedis answerRedis = answerDTO.toEntity();
+        answerRedis = answerRedisRepository.save(answerRedis);
+        return answerRedis;
     }
 
     @Override
-    public Question saveQuestion(QuestionDTO questionDTO) throws Exception {
-        Question question = questionDTO.toEntity();
-        question = questionRepository.save(question);
-        return question;
+    public QuestionRedis saveQuestion(QuestionDTO questionDTO) throws Exception {
+        QuestionRedis questionRedis = questionDTO.toEntity();
+        questionRedis = questionRedisRepository.save(questionRedis);
+        return questionRedis;
     }
-
 
     @Override
     public List<AnswerVO> findAnswerByQuestionId(String questionId) throws Exception {
-        List<Answer> answers = answerRepository.findByQuestionId(questionId);
-        List<AnswerVO> answerVOS = answers.stream()
-                .map(a -> new AnswerVO(a.getUserId(),a.getSession(),a.getAnswer(),a.getQuestionId()))
+        List<AnswerRedis> answerRedis = answerRedisRepository.findByQuestionId(questionId);
+        List<AnswerVO> answerVOS = answerRedis.stream()
+                .map(a -> new AnswerVO(a.getAnswerId(),a.getUserId(),a.getSession(),a.getAnswerContent(),a.getQuestionId()))
                 .collect(Collectors.toList());
         return answerVOS;
     }
@@ -237,6 +349,19 @@ public class RoomServiceImpl implements RoomService {
     }
 
     public void leaveSession(EnterRoomDTO enterRoomDTO) throws Exception{
+        // Redis에 세션 삭제하기
+        String name = enterRoomDTO.getPrevSession();
+        if(name != null){
+            StudyRoomRedis studyRoomRedis = studyRoomRedisRepository.findByName(name.substring(0, name.length() - 1));
+            int prevCount = studyRoomRedis.getCount();
+            if(prevCount == 1){
+                studyRoomRedisRepository.delete(studyRoomRedis);
+            }else {
+                studyRoomRedis.setCount(prevCount-1);
+                studyRoomRedisRepository.save(studyRoomRedis);
+            }
+        }
+
         openvidu.fetch();
         List<Session> activeSessions = openvidu.getActiveSessions();
         String prevSession = enterRoomDTO.getPrevSession();
@@ -255,4 +380,6 @@ public class RoomServiceImpl implements RoomService {
             }
         }
     }
+
+
 }
