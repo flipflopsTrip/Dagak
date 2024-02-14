@@ -719,6 +719,13 @@ console.log('구독자들: ', subscribers.value.length)
   box-sizing: border-box;
 }
 
+.videog6 {
+  width: 33%;
+  border: 5px white solid;
+  box-sizing: border-box;
+}
+
+
 .bigvideo {
   width: 100%;
   display: flex;

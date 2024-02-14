@@ -108,7 +108,7 @@ console.log(todayDagak)
   height: fit-content;
   position: fixed;
   right: 0px;
-  bottom:10%;
+  top:23%;
 }
 
 .achievement {
