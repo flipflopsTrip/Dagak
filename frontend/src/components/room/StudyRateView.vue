@@ -145,7 +145,7 @@ watch(props, (newTime) => {
   height: fit-content;
   position: fixed;
   right: 0px;
-  top:23%;
+  top:3%;
 }
 
 .achievement {
