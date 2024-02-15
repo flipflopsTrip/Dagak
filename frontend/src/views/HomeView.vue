@@ -26,6 +26,10 @@
           <h3 style=""> </h3>
           <p style="" class="font-weight-bold"><h3 > 다각 만들러가기</h3></p>
         </div>
+        <div class="is-typed" style="" @click="navigateToStudyRoom">
+          <h3 style=""> </h3>
+          <p style="" class="font-weight-bold"><h3 >자율공부하러가기</h3></p>
+        </div>
         <div v-if="userStore.loginUserInfo.userId" class="friends">
           <div class="bubble medium bottom" style="margin-left: 30%; width: auto;">
           친구 <b style="color: red;">{{ loginFriends.length }}</b> 명이 <br/> 로그인중이에요
@@ -39,8 +43,7 @@
           style="color: white; display: inline-block;"
           v-else
           @click="navigateToStudyRoom"
-          
-          >
+>
           <div class="withFriend">
           <div v-if="userStore.loginUserInfo.userId" style="flex: auto;"></div> <!-- 빈 요소, 가운데 정렬을 위해 -->
   
@@ -92,8 +95,8 @@ import { useUserStore } from '@/stores/user';
 import { useCategoryStore } from '@/stores/category';
 import { useAlarmStore } from '@/stores/alarm';
 import { useDagakStore } from '@/stores/dagak';
-import { useFriendStore } from '@/stores/friend'
-import { subjectMapping } from '@/utils/subjectMapping'
+import { useFriendStore } from '@/stores/friend';
+import { subjectMapping } from '@/utils/subjectMapping';
 
 const arr = ref([
   " \"정보처리기사\"",
@@ -115,7 +118,7 @@ const loginFriends = computed(() => {
 });
 
 const showFriends = ()=>{
-  alert("친구들!");
+  // alert("친구들!");
   isFriendList.value = isFriendList.value == true?false:true;
 };
 
@@ -156,9 +159,12 @@ onMounted(async () => {
     await getGaks();
   }
 });
-watch(() => userStore.loginUserInfo.userId, (newUserId) => {
+watch(() => userStore.loginUserInfo.userId, async (newUserId) => {
   if (newUserId != null) {
-    getGaks();
+    alarmStore.getUnReadAlarmList();
+    await categoryStore.getCategoryList();
+    await dagakStore.getTodayDagak();
+    await getGaks();
   }
 });
 </script>
