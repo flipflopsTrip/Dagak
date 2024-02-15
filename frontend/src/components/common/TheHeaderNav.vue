@@ -30,7 +30,7 @@
           <img
             class="profile"
             v-if="userStore.loginUserInfo.userPicture"
-            :src="userStore.loginUserInfo.userPicture"
+            :src="`${userStore.loginUserInfo.userPicture}`"
           />
           <img class="profile" v-else src="@/assets/img/default.jpg" />
         </div>
@@ -44,7 +44,7 @@
                 <img class="profile" src="@/assets/img/default.jpg" />
               </div>
               <div>
-                <div>{{ userStore.loginUserInfo.userId }}</div>
+                <div>{{ userStore.loginUserInfo.userNickname }}</div>
                 <div>{{ userStore.loginUserInfo.userEmail }}</div>
               </div>
             </div>
@@ -80,19 +80,19 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount } from 'vue';
-import axios from 'axios';
-import Alarm from './Alarm.vue';
-import AlarmModal from './AlarmModal.vue';
-import { useRouter } from 'vue-router';
-import { useUserStore } from '@/stores/user';
-import { useAlarmStore } from '@/stores/alarm';
-import { cookiesStorage } from '@/utils/CookiesUtil';
+import { ref, onMounted, onBeforeUnmount } from "vue";
+import axios from "axios";
+import Alarm from "./Alarm.vue";
+import AlarmModal from "./AlarmModal.vue";
+import { useRouter } from "vue-router";
+import { useUserStore } from "@/stores/user";
+import { useAlarmStore } from "@/stores/alarm";
+import { cookiesStorage } from "@/utils/CookiesUtil";
 
 const userStore = useUserStore();
 const alarmStore = useAlarmStore();
 const router = useRouter();
-const profileImage = ref('');
+const profileImage = ref("");
 const useImage = (url) => {
   return new URL(`${url}`, import.meta.url).href;
 };
@@ -101,15 +101,12 @@ const useImage = (url) => {
 const logout = async function () {
   userStore.deleteLoginUserInfo();
   const body = {
-    sign: 'logout',
+    sign: "logout",
   };
-  const res = await axios.post(
-    `${import.meta.env.VITE_API_BASE_URL}user`,
-    body,
-  );
+  const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}user`, body);
   //성공 시 홈으로
   router.push({
-    name: 'login',
+    name: "login",
   });
 };
 
@@ -124,14 +121,14 @@ const handleScroll = () => {
 };
 
 onMounted(() => {
-  window.addEventListener('scroll', handleScroll);
+  window.addEventListener("scroll", handleScroll);
   if (userStore.loginUserInfo.userId != null) {
     alarmStore.getUnReadAlarmList();
     profileImage.value = userStore.loginUserInfo.userPicture;
   }
 });
 onBeforeUnmount(() => {
-  window.removeEventListener('scroll', handleScroll);
+  window.removeEventListener("scroll", handleScroll);
 });
 </script>
 
