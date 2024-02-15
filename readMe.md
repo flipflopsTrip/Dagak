@@ -61,9 +61,9 @@
 
 2. 다각 생성 로직
 <p align="center">  
-    <img src="./동그라미.png" width="10%" height="10%" />
-    <img src="./삼각형.png" width="10%" height="10%"/>
-    <img src="./사각형.png" width="10%" height="10%" />
+    <img src="./circle.png" width="10%" height="10%" />
+    <img src="./triangle.png" width="10%" height="10%"/>
+    <img src="./square.png" width="10%" height="10%" />
     <img src="./dagak.png" width="10%" height="10%" />
 </p>
 공부 과목 갯수와 일정에 따른 다각형 모양
