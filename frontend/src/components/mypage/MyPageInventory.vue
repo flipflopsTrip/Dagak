@@ -17,7 +17,7 @@
           <img src="@/assets/img/item/cube.png" class="main-item" />
           <template v-for="item in inventories" :key="item.inventoryId">
             <img
-              :src="`/src/assets/img/item/${item.productImage}.png`"
+              :src="`${item.productImage}`"
               v-if="item.isWearing"
               class="main-item"
             />
@@ -31,7 +31,7 @@
                 <img
                   v-if="item.isWearing"
                   class="inven-wearing-list-item item-img"
-                  :src="`/src/assets/img/store/${item.productImage}.png`"
+                  :src="`${item.productImage}`"
                   @dblclick="changeItem(item.inventoryId)"
                 />
               </template>
