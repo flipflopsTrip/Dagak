@@ -9,11 +9,8 @@
 
 <b>목표</b>
 
-- 체계적인 공부환경 : 오늘의 공부 스케쥴(이하 다각)에 따라서 자동으로 공부시간 관리/스터디룸 관리를 해줍니다.
-- 맞춤형 스터디룸 : 나와 같은 목표를 가진 사람들을 매칭해줍니다.
-- 신속한 공부환경 : 시작과 동시에 랜덤 매칭으로 즉시 스터디룸에 입장시켜줍니다.
-- 함께하는 모꼬지 : 모임에 가입하고 함께 공부할 수 있습니다.
-- 맞춤형 아바타 : 공부시간에 따른 포인트 지급으로 자신의 아바타를 꾸밀 수 있습니다.
+
+
 <br>
 
 ![](https://capsule-render.vercel.app/api?style=flat-square&type=transparent&height=50&color=gradient&text=2.%20개발환경&fontAlign=17&fontColor=bc6c25&fontSize=50&fontAlignY=63)
@@ -29,8 +26,22 @@
 ![](https://capsule-render.vercel.app/api?style=flat-square&type=transparent&height=50&color=gradient&text=3.%20시스템%20아키텍처&fontAlign=27&fontColor=bc6c25&fontSize=50&fontAlignY=63)
 ---
 <br>
-<img src="./architecture.png" width="50" height="50"/>
+
+<p align="center">
+    <img src="./architecture.png" width="80%" height="80%" />
+</p>
+
 <br>
 
 ![](https://capsule-render.vercel.app/api?style=flat-square&type=transparent&height=50&color=gradient&text=3.%20주요%20기능&fontAlign=20&fontColor=bc6c25&fontSize=50&fontAlignY=63)
 ---
+<br>
+
+<b>세부 기능</b>
+
+- 체계적인 공부환경 : 오늘의 공부 스케쥴(이하 다각)에 따라서 자동으로 공부시간 관리/스터디룸 관리를 해줍니다.
+- 맞춤형 스터디룸 : 나와 같은 목표를 가진 사람들을 매칭해줍니다.
+- 신속한 공부환경 : 시작과 동시에 랜덤 매칭으로 즉시 스터디룸에 입장시켜줍니다.
+- 함께하는 모꼬지 : 모임에 가입하고 함께 공부할 수 있습니다.
+- 맞춤형 아바타 : 공부시간에 따른 포인트 지급으로 자신의 아바타를 꾸밀 수 있습니다.
+
