@@ -107,22 +107,14 @@ const disableLoginButton = ref(true);
 // 구글 로그인 페이지로 이동
 const googleLogin = async function () {
   window.location.replace(
-<<<<<<< HEAD
-    'https://accounts.google.com/o/oauth2/v2/auth?client_id=273219571369-d3f2u10s1447t28d54ut6v359m5kfmp6.apps.googleusercontent.com&redirect_uri=https://i10a404.p.ssafy.io/googleLogin&response_type=code&scope=email',
-=======
-    "https://accounts.google.com/o/oauth2/v2/auth?client_id=273219571369-d3f2u10s1447t28d54ut6v359m5kfmp6.apps.googleusercontent.com&redirect_uri=https://localhost:5173/googleLogin&response_type=code&scope=email"
->>>>>>> ed512c0ce8bddee74380ba0fd344f98f237eaddd
+    "https://accounts.google.com/o/oauth2/v2/auth?client_id=273219571369-d3f2u10s1447t28d54ut6v359m5kfmp6.apps.googleusercontent.com&redirect_uri=https://i10a404.p.ssafy.io/googleLogin&response_type=code&scope=email"
   );
 };
 
 // 카카오 로그인 페이지로 이동
 const kakaoLogin = async function () {
   window.location.replace(
-<<<<<<< HEAD
-    'https://kauth.kakao.com/oauth/authorize?client_id=891949d64302e510fe79f05131e7d972&redirect_uri=https://i10a404.p.ssafy.io/kakaoLogin&response_type=code',
-=======
-    "https://kauth.kakao.com/oauth/authorize?client_id=891949d64302e510fe79f05131e7d972&redirect_uri=https://localhost:5173/kakaoLogin&response_type=code"
->>>>>>> ed512c0ce8bddee74380ba0fd344f98f237eaddd
+    "https://kauth.kakao.com/oauth/authorize?client_id=891949d64302e510fe79f05131e7d972&redirect_uri=https://i10a404.p.ssafy.io/kakaoLogin&response_type=code"
   );
 };
 
