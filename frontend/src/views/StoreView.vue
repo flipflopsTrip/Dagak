@@ -8,10 +8,7 @@
       </div>
       <div v-else>보유 포인트: 로그인이 필요한 서비스입니다.</div>
       <div class="market-index">
-        <button
-          @click="selectCategory(null)"
-          class="btn my-bc-btn common-btn-light"
-        >
+        <button @click="selectCategory(null)" class="btn my-bc-btn common-btn-light">
           전체
         </button>
         <template v-for="(categoryItems, category) in products" :key="category">
@@ -38,7 +35,7 @@
               :title="item.productDescription"
             >
               <img
-                :src="`${item.productImage}`"
+                :src="`/public/img/store${item.productImage}.png`"
                 class="market-items-detail-img"
               />
               <div
@@ -67,10 +64,10 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue';
-import axios from 'axios';
-import { useRouter } from 'vue-router';
-import {useUserStore} from '@/stores/user';
+import { ref, onMounted, computed } from "vue";
+import axios from "axios";
+import { useRouter } from "vue-router";
+import { useUserStore } from "@/stores/user";
 const router = useRouter();
 
 const products = ref({});
@@ -109,31 +106,29 @@ const getProductList = function () {
 
 const buyProduct = function (productId) {
   if (userPoint.value == null) {
-    if (window.confirm('로그인이 필요한 서비스입니다. 로그인 하시겠습니까?')) {
+    if (window.confirm("로그인이 필요한 서비스입니다. 로그인 하시겠습니까?")) {
       //로그인창으로 이동
       router.push({
-        name: 'login',
+        name: "login",
       });
     }
   } else {
-    const body = { sign: 'buy', productId: `${productId}` };
-    axios
-      .post(`${import.meta.env.VITE_API_BASE_URL}product`, body)
-      .then((res) => {
-        if (res.data.code === 1000) {
-          alert('구매하였습니다.');
-          getLoginUserPoint(); //포인트 새로고침
-        } else {
-          alert(res.data.message);
-        }
-      });
+    const body = { sign: "buy", productId: `${productId}` };
+    axios.post(`${import.meta.env.VITE_API_BASE_URL}product`, body).then((res) => {
+      if (res.data.code === 1000) {
+        alert("구매하였습니다.");
+        getLoginUserPoint(); //포인트 새로고침
+      } else {
+        alert(res.data.message);
+      }
+    });
   }
 };
 
 //로그인 한 유저의 포인트 정보
 const getLoginUserPoint = async function () {
   const body = {
-    sign: 'getMyPage',
+    sign: "getMyPage",
   };
 
   axios.post(`${import.meta.env.VITE_API_BASE_URL}user`, body).then((res) => {
@@ -158,7 +153,7 @@ const filteredProducts = computed(() => {
 
 <style lang="scss" scoped>
 .marketpage {
-  background-image: url('@/assets/background.gif');
+  background-image: url("@/assets/background.gif");
   background-size: cover;
   height: 100vh;
   padding-top: 40px;
