@@ -46,7 +46,7 @@
       <div class="inven-list text-center" v-if="inventories != ''">
         <div v-for="item in inventories" :key="item.inventoryId">
           <img
-            :src="`/src/assets/img/store/${item.productImage}.png`"
+            :src="`${item.productImage}`"
             :class="{ 'is-wearing': item.isWearing }"
             class="item-img"
             @dblclick="changeItem(item.inventoryId)"
