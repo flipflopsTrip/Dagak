@@ -32,16 +32,12 @@
           <div class="mok-list-wrapper">
             <div v-for="item in user" :key="item.userId">
               <div class="mok-list-detail">
-
-
                 <img
                   class="profile"
                   v-if="item.userPicture"
                   :src="`${item.userPicture}`"
                 />
                 <img class="profile" v-else src="@/assets/img/default.jpg" />
-
-
 
                 <div>
                   {{ item.userNickname
@@ -330,7 +326,7 @@ $my-shadow:
   .mok-content-wrapper {
     flex-grow: 1;
     display: flex;
-    box-shadow: $my-shadow;
+    // box-shadow: $my-shadow;
     padding: 20px;
     // background-color: whitesmoke;
     background-color: $color-light-6;
@@ -339,10 +335,10 @@ $my-shadow:
       padding: 30px;
       > div {
         background-color: $color-light-2;
-        box-shadow: $my-shadow;
+        // box-shadow: $my-shadow;
       }
       .mok-subtitle {
-        font-size: 1.5rem;
+        font-size: 1.3rem;
         font-weight: 600;
         text-align: center;
         padding: 5px;
@@ -369,6 +365,7 @@ $my-shadow:
             padding: 10px;
             img {
               width: 30px;
+              height: 30px;
               border-radius: 50%;
               margin-right: 10px;
               margin-left: 60px;
@@ -390,15 +387,15 @@ $my-shadow:
         margin-bottom: 50px;
         border-bottom: 1px solid black;
         min-height: 300px;
-        box-shadow: $my-shadow;
+        // box-shadow: $my-shadow;
         background-color: white;
         .mok-right-info-subtitle {
           background-color: $color-light-2;
           text-align: center;
-          font-size: 1.5rem;
+          font-size: 1.3rem;
           font-weight: 600;
           padding: 5px;
-          box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+          // box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
         }
         .mok-right-info-content {
           text-align: center;
@@ -410,8 +407,9 @@ $my-shadow:
             position: relative;
             z-index: 1;
             background-color: white;
-            font-weight: bold;
+            font-weight: bolder;
             padding: 0px 6px;
+            font-size: 1rem;
           }
           .mok-right-info-content-box-border {
             padding: 20px 10px;
@@ -422,7 +420,7 @@ $my-shadow:
           }
           .mok-right-info-content-name {
             font-size: 1.7rem;
-            font-weight: bold;
+            font-weight: bolder;
             margin-bottom: 15px;
           }
           .mok-right-info-content-cate {
@@ -432,6 +430,7 @@ $my-shadow:
             background-color: $color-dark-6;
             color: white;
             border-radius: 5px;
+            font-size: 1rem;
           }
         }
       }
