@@ -226,6 +226,5 @@ export const useUserStore = defineStore(
     persist: {
       storage: userCookiesStorage,
     },
-    path : ["loginUserInfo","mySessionToken","studyRoomSessionToken","achievementRate","isInSession",]
   },
 );
