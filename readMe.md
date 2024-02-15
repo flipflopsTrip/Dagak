@@ -1,4 +1,4 @@
-![header](https://capsule-render.vercel.app/api?type=rect&height=300&color=fefae0&text=다%20각%20&section=header&reversal=false&textBg=false&fontAlign=50&desc=스터디%20랜덤%20매칭%2&fontColor=dda15e&rotate=-1&descAlignY=71&fontSize=100&animation=twinkling)
+![header](https://capsule-render.vercel.app/api?type=rect&height=300%&width=80%&color=fefae0&text=다%20각%20&section=header&reversal=false&textBg=false&fontAlign=50&desc=스터디%20랜덤%20매칭%2&fontColor=dda15e&rotate=-1&descAlignY=71&fontSize=100&animation=twinkling)
 
 
 ![](https://capsule-render.vercel.app/api?type=transparent&height=50&color=gradient&text=1.%20서비스%20소개&fontAlign=21&fontColor=bc6c25&fontSize=50&fontAlignY=63)
