@@ -18,10 +18,10 @@ export const useUserStore = defineStore(
     const isInSession = ref(false);
     const achievementRate = ref(0);
     const friendStore = useFriendStore();
-
+    const userStore = useUserStore();
     //로그인 세션 test
     const login = async function () {
-      await friendStore.getLoginFriends(); // 로그인했을때 로그인한 친구들 목록 확인하기
+      friendStore.getLoginFriends(); // 로그인했을때 로그인한 친구들 목록 확인하기
       await loginSession();
       alert('방입장 성공');
     };
@@ -163,8 +163,8 @@ export const useUserStore = defineStore(
           console.log(res.data.result);
           loginUserInfo.value = res.data.result;
           loginUserInfo.value.sub = 'SQLD';
-          const userStore = useUserStore();
-          userStore.$patch({"userStore" : loginUserInfo.value});
+
+          userStore.$patch({"loginUserInfo" : loginUserInfo.value});
         })
         .then(() => {
           login();
@@ -186,6 +186,12 @@ export const useUserStore = defineStore(
         await login();
       }
     });
+    const updateProfile =  (imgURL) =>{
+      loginUserInfo.value.userPicture = imgURL;
+      let userStore = JSON.parse(userCookiesStorage.getItem("userStore"));
+      userStore.loginUserInfo = loginUserInfo.value;
+      userCookiesStorage.setItem("userStore", JSON.stringify(userStore));
+    }
     return {
       APPLICATION_SERVER_URL,
       login,
@@ -203,6 +209,7 @@ export const useUserStore = defineStore(
       studyRoomSessionToken,
       isInSession,
       achievementRate,
+      updateProfile,
     };
   },
 
@@ -212,5 +219,6 @@ export const useUserStore = defineStore(
     persist: {
       storage: userCookiesStorage,
     },
+    path : ["loginUserInfo","mySessionToken","studyRoomSessionToken","achievementRate","isInSession",]
   },
 );
