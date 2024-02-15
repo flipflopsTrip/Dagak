@@ -55,7 +55,7 @@
 
 1. Recapcha
 <p align="center">  
-    <img src="./recapcha.png" width="10%" height="10%" />
+    <img src="./recapcha.png" width="70%" height="70%" />
 </p>
 구글API를 이용한 브루트포스 / 매크로 방지
 
