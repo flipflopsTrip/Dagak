@@ -5,13 +5,21 @@
         <p class="titletag" style="font-weight: bold; font-size: 30px">공부시간</p>
         <div class="div4 studytime">{{ convertedTime }}</div>
         <hr />
-        <p class="titletag"><b>달성률 :</b> {{ store.achievementRate }} %</p>
-        <div><b>과목명:</b> {{ subjectMapping(categoryName) }}</div>
+        <p class="titletag">
+          <b>달성률 :</b>
+          <div v-if="done && isLastSubject">
+            100 %
+          </div>
+          <div v-else>
+            {{ Math.ceil(((gakOrder - 1) / gaksToStudy.length) * 100) }} %
+          </div> 
+        </p>
+        <div><b>과목명 :</b> {{ subjectMapping(categoryName) }}</div>
         <div><b>남은시간 : </b> {{ convertedRemainTime }}</div>
-        <div><b>다각이름:</b>{{ dagakName }}</div>
+        <div><b>다각이름 : </b>{{ dagakName }}</div>
 
         <div class="dagak">
-          <DagakImg2 :gak-length="gaksToStudy.length" />
+          <DagakImg2 v-if="gaksToStudy" :gak-length="gaksToStudy.length" />
         </div>
         <br />
 
@@ -21,7 +29,7 @@
             <ul class="list">
               <li v-for="(gak, index) in gaksToStudy" :key="index">
                 {{ subjectMapping(categoryNameList[gak.categoryId - 1].categoryName) }} :
-                {{ getStatus(index) }}
+                {{ getStatus(index + 1) }}
               </li>
             </ul>
           </div>
@@ -79,7 +87,9 @@ const props = defineProps({
   sec: Number,
   remainTime: Number,
   categoryName: String,
-  gakOrder: Number
+  gakOrder: Number,
+  isLastSubject: Boolean,
+  done: Boolean
 })
 
 const gaksToStudy = ref(todayDagak.gaks)
