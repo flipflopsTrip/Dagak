@@ -14,7 +14,7 @@
 
 <br>
 
-![](https://capsule-render.vercel.app/api?style=flat-square&type=transparent&height=50&color=gradient&text=2.%20개발환경&fontAlign=13&fontColor=bc6c25&fontSize=50&fontAlignY=63)
+![](https://capsule-render.vercel.app/api?style=flat-square&type=transparent&height=50&color=gradient&text=2.%20개발환경&fontAlign=14&fontColor=bc6c25&fontSize=50&fontAlignY=63)
 ---
 
 <b>기술스택</b>
@@ -24,7 +24,7 @@
 - Database: ![](https://img.shields.io/badge/MySQL-4479A1?style=flat-square&logo=MySQL&logoColor=white) ![](https://img.shields.io/badge/Redis-DC382D?style=flat-square&logo=Redis&logoColor=white)
 <br>
 
-![](https://capsule-render.vercel.app/api?style=flat-square&type=transparent&height=50&color=gradient&text=3.%20시스템%20아키텍처&fontAlign=20&fontColor=bc6c25&fontSize=50&fontAlignY=63)
+![](https://capsule-render.vercel.app/api?style=flat-square&type=transparent&height=50&color=gradient&text=3.%20시스템%20아키텍처&fontAlign=22&fontColor=bc6c25&fontSize=50&fontAlignY=63)
 ---
 <br>
 <p align="center">
@@ -33,7 +33,7 @@
 
 <br>
 
-![](https://capsule-render.vercel.app/api?style=flat-square&type=transparent&height=50&color=gradient&text=4.%20주요%20기능&fontAlign=13&fontColor=bc6c25&fontSize=50&fontAlignY=63)
+![](https://capsule-render.vercel.app/api?style=flat-square&type=transparent&height=50&color=gradient&text=4.%20주요%20기능&fontAlign=15&fontColor=bc6c25&fontSize=50&fontAlignY=63)
 ---
 <br>
 <p align="center">  
@@ -49,7 +49,7 @@
 - 함께하는 모꼬지 : 모임에 가입하고 함께 공부할 수 있습니다.
 - 맞춤형 아바타 : 공부시간에 따른 포인트 지급으로 자신의 아바타를 꾸밀 수 있습니다.
 
- ![](https://capsule-render.vercel.app/api?style=flat-square&type=transparent&height=50&color=gradient&text=5.%20기술적%20차별점&fontAlign=18&fontColor=bc6c25&fontSize=50&fontAlignY=63)
+ ![](https://capsule-render.vercel.app/api?style=flat-square&type=transparent&height=50&color=gradient&text=5.%20기술적%20차별점&fontAlign=20&fontColor=bc6c25&fontSize=50&fontAlignY=63)
 ---
 <br>
 
@@ -79,7 +79,7 @@
     <img src="./websocket.png" width="50%" height="50%" />
 </p>
 
- ![](https://capsule-render.vercel.app/api?style=flat-square&type=transparent&height=50&color=gradient&text=6.%20동작&fontAlign=7&fontColor=bc6c25&fontSize=50&fontAlignY=63)
+ ![](https://capsule-render.vercel.app/api?style=flat-square&type=transparent&height=50&color=gradient&text=6.%20동작&fontAlign=9&fontColor=bc6c25&fontSize=50&fontAlignY=63)
 ---
 
 1. 
