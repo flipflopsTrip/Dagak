@@ -14,7 +14,7 @@
 
 <br>
 
-![](https://capsule-render.vercel.app/api?style=flat-square&type=transparent&height=50&color=gradient&text=2.%20개발환경&fontAlign=12&fontColor=bc6c25&fontSize=50&fontAlignY=63)
+![](https://capsule-render.vercel.app/api?style=flat-square&type=transparent&height=50&color=gradient&text=2.%20개발환경&fontAlign=13&fontColor=bc6c25&fontSize=50&fontAlignY=63)
 ---
 
 <b>기술스택</b>
