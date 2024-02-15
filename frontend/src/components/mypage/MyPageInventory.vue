@@ -4,7 +4,7 @@
       인벤토리
       <span>
         보유: {{ userStore.loginUserInfo.userPoint }}
-        <img src="@/assets/img/store/coin.png" class="coin" />
+        <img src="@/assets/img/item/coin.png" class="coin" />
       </span>
       <button @click="saveInventory" class="btn common-btn inven-save-btn">
         아바타 저장
@@ -31,7 +31,7 @@
                 <img
                   v-if="item.isWearing"
                   class="inven-wearing-list-item item-img"
-                  :src="`/img/item/${item.productImage}.png`"
+                  :src="`/img/store/${item.productImage}.png`"
                   @dblclick="changeItem(item.inventoryId)"
                 />
               </template>
@@ -46,7 +46,7 @@
       <div class="inven-list text-center" v-if="inventories != ''">
         <div v-for="item in inventories" :key="item.inventoryId">
           <img
-            :src="`/img/item/${item.productImage}.png`"
+            :src="`/img/store/${item.productImage}.png`"
             :class="{ 'is-wearing': item.isWearing }"
             class="item-img"
             @dblclick="changeItem(item.inventoryId)"
