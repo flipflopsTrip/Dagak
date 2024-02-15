@@ -7,10 +7,6 @@
 
 혼자 공부하는데 의지가 꺾이는 사람들을 위해서, 같은 목표를 가진 사람들을 소개하고 함께 체계적인 공부환경을 제공할 수 없을까?
 
-<b>목표</b>
-
-
-
 <br>
 
 ![](https://capsule-render.vercel.app/api?style=flat-square&type=transparent&height=50&color=gradient&text=2.%20개발환경&fontAlign=17&fontColor=bc6c25&fontSize=50&fontAlignY=63)
