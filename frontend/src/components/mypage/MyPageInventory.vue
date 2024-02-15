@@ -31,7 +31,7 @@
                 <img
                   v-if="item.isWearing"
                   class="inven-wearing-list-item item-img"
-                  :src="`/img/store/${item.productImage}.png`"
+                  :src="`/img/item/${item.productImage}.png`"
                   @dblclick="changeItem(item.inventoryId)"
                 />
               </template>
