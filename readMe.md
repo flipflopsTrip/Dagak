@@ -82,5 +82,10 @@
  ![](https://capsule-render.vercel.app/api?style=flat-square&type=transparent&height=50&color=gradient&text=6.%20동작&fontAlign=9&fontColor=bc6c25&fontSize=50&fontAlignY=63)
 ---
 
-1. 
+1. 회원가입 / 로그인 실패
+<p align="center">  
+    <img src="./register_loginfail.gif" width="50%" height="50%" />
+</p>
+
+
 
