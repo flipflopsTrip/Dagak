@@ -28,7 +28,7 @@
 ---
 <br>
 <p align="center">
-    <img src="./architecture.png" width="80%" height="80%" />
+    <img src="./assets/architecture.png" width="80%" height="80%" />
 </p>
 
 <br>
