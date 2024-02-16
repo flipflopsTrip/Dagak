@@ -83,6 +83,6 @@
 ---
 
 1. 회원가입 / 로그인 실패
- ![](./register_loginfail.gif)
+![register_loginfail](/uploads/f40d6eab675a1d9e01067069ffc14e19/register_loginfail.gif)
 
 
