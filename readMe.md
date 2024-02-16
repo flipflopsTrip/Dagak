@@ -83,9 +83,6 @@
 ---
 
 1. 회원가입 / 로그인 실패
-<p align="center">  
-    <img src="./register_loginfail.gif" width="50%" height="50%" />
-</p>
-
+ ![](./register_loginfail.gif)
 
 
