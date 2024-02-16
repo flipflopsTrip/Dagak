@@ -85,6 +85,7 @@
 1. 회원가입 / 로그인 실패
 ![register_loginfail](/uploads/f40d6eab675a1d9e01067069ffc14e19/register_loginfail.gif)
 
-2. 친구/모꼬지
+2. 친구 / 모꼬지
 ![friend_mokkiji](/uploads/74f263f3a70968a5ed690fd56bdfe563/friend_mokkiji.gif)
+
 
