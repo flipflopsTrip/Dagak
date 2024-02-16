@@ -85,14 +85,17 @@
 1. 회원가입 / 로그인 실패
 ![register_loginfail](/uploads/f40d6eab675a1d9e01067069ffc14e19/register_loginfail.gif)
 
-2. 친구 / 모꼬지
-![friend_mokkiji](/uploads/01fb199220627a7cdbbe94650eeb7faf/friend_mokkiji.gif)
-
-3. OAuth
+2. OAuth
 ![다각_oAuth](/uploads/487592f8d9fcc936836533087e3722a8/다각_oAuth.gif)
 
-4. 게시판
-![다각_게시판](/uploads/9e2676e99d43e7ff4682eb8a423b667f/다각_게시판.gif)
+3. 스터디룸 
+![다각_스터디룸](/uploads/cffbe3ee6d6b2bc4e7778bd598b3441b/다각_스터디룸.gif)
+
+4. 친구 / 모꼬지
+![friend_mokkiji](/uploads/01fb199220627a7cdbbe94650eeb7faf/friend_mokkiji.gif)
 
 5. 상점
 ![다각_상점](/uploads/5a6509657e702f3f2800a48048611779/다각_상점.gif)
+
+6. 게시판
+![다각_게시판](/uploads/9e2676e99d43e7ff4682eb8a423b667f/다각_게시판.gif)
