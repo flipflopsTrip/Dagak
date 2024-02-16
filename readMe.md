@@ -37,11 +37,11 @@
 ---
 <br>
 <p align="center">  
-    <img src="./dagak.png" width="10%" height="10%" />
-    <img src="./study.png" width="10%" height="10%"/>
-    <img src="./wing.png" width="10%" height="10%" />
-    <img src="./mokkoji.png" width="10%" height="10%" />
-    <img src="./avatar.png" width="10%" height="10%" />
+    <img src="./assets/dagak.png" width="10%" height="10%" />
+    <img src="./assets/study.png" width="10%" height="10%"/>
+    <img src="./assets/wing.png" width="10%" height="10%" />
+    <img src="./assets/mokkoji.png" width="10%" height="10%" />
+    <img src="./assets/avatar.png" width="10%" height="10%" />
 </p>
 - 체계적인 공부환경 : 오늘의 공부 스케쥴(이하 다각)에 따라서 자동으로 공부시간 관리/스터디룸 관리를 해줍니다.
 - 맞춤형 스터디룸 : 나와 같은 목표를 가진 사람들을 매칭해줍니다.
@@ -57,7 +57,7 @@
 
 구글API를 이용한 브루트포스 / 매크로 방지
 <p align="center">  
-    <img src="./recapcha.png" width="60%" height="50%" />
+    <img src="./assets/recapcha.png" width="60%" height="50%" />
 </p>
 
 
@@ -66,17 +66,17 @@
 
 공부 과목 갯수와 일정에 따른 다각형 모양
 <p align="center">  
-    <img src="./circle.png" width="10%" height="10%" />
-    <img src="./triangle.png" width="10%" height="10%"/>
-    <img src="./square.png" width="10%" height="10%" />
-    <img src="./dagak.png" width="10%" height="10%" />
+    <img src="./assets/circle.png" width="10%" height="10%" />
+    <img src="./assets/triangle.png" width="10%" height="10%"/>
+    <img src="./assets/square.png" width="10%" height="10%" />
+    <img src="./assets/dagak.png" width="10%" height="10%" />
 </p>
 
 3. 실시간 상호작용
 
 사용자와 서버와의 웹소켓 통신과,구독/발행을 통해 실시간 상호작용 시스템
 <p align="center">  
-    <img src="./websocket.png" width="50%" height="50%" />
+    <img src="./assets/websocket.png" width="50%" height="50%" />
 </p>
 
  ![](https://capsule-render.vercel.app/api?style=flat-square&type=transparent&height=50&color=gradient&text=6.%20동작&fontAlign=9&fontColor=bc6c25&fontSize=50&fontAlignY=63)
