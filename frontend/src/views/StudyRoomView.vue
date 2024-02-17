@@ -496,32 +496,52 @@ const CountAfterComplete = () => {
     sec.value++;
   }, 1000);
 };
+// 플래그
 
-onBeforeMount(async () => {
-  await axios
-    .get(`${import.meta.env.VITE_API_BASE_URL}/dagak/enterRoomGetGakToStudy`)
-    .then((res) => {
-      const result = res.data.result;
-      // result : gakId, totalTime, calendarId, memoryTime, categoryId, userId, categoryName, gakOrder
-      // 그에 따른 categoryId로 방 이동 바랍니다.
-      categoryId.value = result.categoryId;
-      calendarId.value = result.calendarId;
-      gakId.value = result.gakId;
-      userId.value = result.userId;
-      gakOrder.value = result.gakOrder;
-      memoryTime.value = result.memoryTime;
-      store.loginUserInfo.sub = result.categoryName;
-      done.value = false;
+// 방 입장
+const enterRoom = async (sessionId) => {
+  let token = null;
+  if (change.value == true) {
+    token = await changeSession(sessionId);
+    change.value = false;
+  } else {
+    token = await createSession(sessionId);
+  }
+  return token;
+};
+const getMyStudy = async () => {
+  const response = await axios.get(
+    `${import.meta.env.VITE_API_BASE_URL}/dagak/enterRoomGetGakToStudy`
+  );
 
-      alert(result.categoryName + "방에 입장합니다.");
-      categoryName.value = result.categoryName;
-      const achievementRate = result.memoryTime / result.totalTime;
-      remainTime.value = result.requiredStudyTime;
+  let result = response.data.result;
+  //오늘 공부할 다각이 설정 없으면 -> 자유공부방으로 가야지
+  if (result == null) {
+    await getQuestion();
+    return;
+  }
+  // result : gakId, totalTime, calendarId, memoryTime, categoryId, userId, categoryName, gakOrder
+  // 그에 따른 categoryId로 방 이동 바랍니다.
+  categoryId.value = result.categoryId;
+  calendarId.value = result.calendarId;
+  gakId.value = result.gakId;
+  userId.value = result.userId;
+  gakOrder.value = result.gakOrder;
+  memoryTime.value = result.memoryTime;
+  store.loginUserInfo.sub = result.categoryName;
+  done.value = false;
 
-      store.achievementRate = Math.floor(achievementRate * 100);
-      sec.value = result.memoryTime; // 공부했던 시간.
-    });
+  alert(result.categoryName + "방에 입장합니다.");
+  categoryName.value = result.categoryName;
+  const achievementRate = result.memoryTime / result.totalTime;
+  remainTime.value = result.requiredStudyTime;
 
+  store.achievementRate = Math.floor(achievementRate * 100);
+  sec.value = result.memoryTime; // 공부했던 시간.
+  await getQuestion();
+};
+
+const getQuestion = async () => {
   // TODO : redis에 저장된 질문/ 답변을 불러와서, QnAListView에 뿌려주기
   const body = {
     sign: "getSessionQnA",
@@ -543,23 +563,8 @@ onBeforeMount(async () => {
       }
     })
     .catch((e) => {
-      // alert(e);
-      // console.log('session 질문(redis) 가져오기 실패!!!!!!!!!!! ')
+      alert(e);
     });
-});
-
-// 플래그
-
-// 방 입장
-const enterRoom = async (sessionId) => {
-  let token = null;
-  if (change.value == true) {
-    token = await changeSession(sessionId);
-    change.value = false;
-  } else {
-    token = await createSession(sessionId);
-  }
-  return token;
 };
 
 // 과목 변경
@@ -795,12 +800,12 @@ const toggleMute = (video) => {
   }
 };
 
-onMounted(() => {
+onMounted(async () => {
   done.value = false;
   dagakStore.stay = false;
-  leaveSession().then(() => {
-    joinSession();
-  });
+  await leaveSession();
+  await getMyStudy();
+  await joinSession();
   startCount();
 });
 

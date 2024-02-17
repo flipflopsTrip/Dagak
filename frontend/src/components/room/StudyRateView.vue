@@ -10,7 +10,7 @@
           <div v-if="done && isLastSubject">
             100 %
           </div>
-          <div v-else>
+          <div v-else-if="todayDagak.length">
             {{ Math.ceil(((gakOrder - 1) / gaksToStudy.length) * 100) }} %
           </div> 
         </p>
