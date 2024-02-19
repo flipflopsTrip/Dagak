@@ -1,6 +1,6 @@
 ![header](https://capsule-render.vercel.app/api?type=rect&height=300%&width=150%&color=fefae0&text=다%20각%20&section=header&reversal=false&textBg=false&fontAlign=50&desc=스터디%20랜덤%20매칭&fontColor=dda15e&rotate=-1&descAlignY=71&fontSize=100&animation=twinkling)
 
-목차  
+## 목차  
 [1. 서비스 소개](#1-서비스-소개)  
 [2. 개발환경](#2-개발환경)  
 [3. 시스템 아키텍처](#3-시스템-아키텍처)  
@@ -11,7 +11,7 @@
 [8. 맡은 역할](#8-맡은-역할) 
 
 
-![](https://capsule-render.vercel.app/api?type=transparent&height=50&color=gradient&text=1.%20서비스%20소개&fontAlign=18.4&fontColor=bc6c25&fontSize=50&fontAlignY=63)
+![](https://capsule-render.vercel.app/api?type=transparent&height=50&color=gradient&text=1.%20서비스%20소개&fontAlign=14.4&fontColor=bc6c25&fontSize=40&fontAlignY=63)
 ---
 <b>기획 배경</b>
 
@@ -24,7 +24,7 @@
 
 <br>
 
-![](https://capsule-render.vercel.app/api?style=flat-square&type=transparent&height=50&color=gradient&text=2.%20개발환경&fontAlign=15&fontColor=bc6c25&fontSize=50&fontAlignY=63)
+![](https://capsule-render.vercel.app/api?style=flat-square&type=transparent&height=50&color=gradient&text=2.%20개발환경&fontAlign=12.5&fontColor=bc6c25&fontSize=40&fontAlignY=63)
 ---
 <b>기술스택</b>
 
@@ -41,7 +41,7 @@
 
 <br>
 
-![](https://capsule-render.vercel.app/api?style=flat-square&type=transparent&height=50&color=gradient&text=3.%20시스템%20아키텍처&fontAlign=24&fontColor=bc6c25&fontSize=50&fontAlignY=63)
+![](https://capsule-render.vercel.app/api?style=flat-square&type=transparent&height=50&color=gradient&text=3.%20시스템%20아키텍처&fontAlign=20.5&fontColor=bc6c25&fontSize=40&fontAlignY=63)
 ---
 <br>
 <p align="center">
@@ -49,13 +49,13 @@
 </p>
 <br>
 
-![](https://capsule-render.vercel.app/api?type=transparent&height=50&color=gradient&text=4.%20ERD&fontAlign=9.4&fontColor=bc6c25&fontSize=50&fontAlignY=63)
+![](https://capsule-render.vercel.app/api?type=transparent&height=50&color=gradient&text=4.%20ERD&fontAlign=7&fontColor=bc6c25&fontSize=40&fontAlignY=63)
 ---
 
 ![다각_ERD](./assets/다각_ERD.png)
 <br>
 
-![](https://capsule-render.vercel.app/api?style=flat-square&type=transparent&height=50&color=gradient&text=5.%20주요%20기능&fontAlign=16&fontColor=bc6c25&fontSize=50&fontAlignY=63)
+![](https://capsule-render.vercel.app/api?style=flat-square&type=transparent&height=50&color=gradient&text=5.%20주요%20기능&fontAlign=13&fontColor=bc6c25&fontSize=40&fontAlignY=63)
 ---
 <p align="center">  
     <img src="./assets/dagak.png" width="10%" height="10%" />
@@ -77,7 +77,7 @@
 - **맞춤형 아바타** : 공부시간에 따른 포인트 지급으로 자신의 아바타를 꾸밀 수 있습니다.  
 <br>
 
- ![](https://capsule-render.vercel.app/api?style=flat-square&type=transparent&height=50&color=gradient&text=6.%20기술적%20차별점&fontAlign=21.5&fontColor=bc6c25&fontSize=50&fontAlignY=63)
+ ![](https://capsule-render.vercel.app/api?style=flat-square&type=transparent&height=50&color=gradient&text=6.%20기술적%20차별점&fontAlign=17.5&fontColor=bc6c25&fontSize=40&fontAlignY=63)
 
 ## 1. Recapcha
 
@@ -105,7 +105,7 @@
     <img src="./assets/websocket.png" width="50%" height="50%" />
 </p>
 
-![](https://capsule-render.vercel.app/api?style=flat-square&type=transparent&height=50&color=gradient&text=7.%20서비스%20화면&fontAlign=19&fontColor=bc6c25&fontSize=50&fontAlignY=63)
+![](https://capsule-render.vercel.app/api?style=flat-square&type=transparent&height=50&color=gradient&text=7.%20서비스%20화면&fontAlign=15&fontColor=bc6c25&fontSize=40&fontAlignY=63)
 ---
 
 ### 1. 메인
@@ -150,14 +150,14 @@
 
 <br>
 
-![](https://capsule-render.vercel.app/api?style=flat-square&type=transparent&height=50&color=gradient&text=8.%20맡은역할&fontAlign=15&fontColor=bc6c25&fontSize=50&fontAlignY=63)
+![](https://capsule-render.vercel.app/api?style=flat-square&type=transparent&height=50&color=gradient&text=8.%20맡은역할&fontAlign=12&fontColor=bc6c25&fontSize=40&fontAlignY=63)
 ---
 
 ### 최영진
 - **프론트엔드 담당**
     - Vue3, Pinia(상태 관리 라이브러리), scss, eslint, prettier
 
-- **기능**
+- **담당 기능**
     - vue 디렉토리 구조 구축
     
     - 회원가입, 로그인
